@@ -1,10 +1,10 @@
 #include <stdlib.c>
-struct string{
+typedef struct string{
 	char* string;
 	int length;
 	int maxCapacity;
-}
-struct string* initString(char* pointer, int length){
+}String;
+String* initString(char* pointer, int length){
 	struct string* string = malloc(sizeof(struct string));
 	string->maxCapacity = length * 1.5;
 	string->length = length;
@@ -14,7 +14,7 @@ struct string* initString(char* pointer, int length){
 	}
 	return string;
 }
-struct string* appendArr(struct string* str, char[]chars, int arrL){
+String* appendArr(String* str, char[]chars, int arrL){
 	for (int i = 0; i < arrL; i++){
 		if (str->length == str->maxCapacity){
 			growStr(str, (str->length+1) / 2);  
@@ -23,17 +23,17 @@ struct string* appendArr(struct string* str, char[]chars, int arrL){
 		str->length++;
 	}
 }
-struct string* appendPtr(struct string* str, char* ptr, int ptrLen){
+String* appendPtr(String* str, char* ptr, int ptrLen){
 	for (int i = 0; i < ptrLen; i++){
 		if (str->length == str->maxCapacity){
-			growStr(str, (str->length+1) / 2);  
+			growStr(str, (str->length+1) / 2);
 		}
 		str->string[str->length] = ptr[i];
 		str->length++;
 	}
 	return str;
 }
-struct string* appendHeapPtr(struct string* str, char* ptr, int ptrLen){
+String* appendHeapPtr(String* str, char* ptr, int ptrLen){
 	for (int i = 0; i < ptrLen; i++){
 		if (str->length == str->maxCapacity){
 			growStr(str, (str->length+1) / 2);   
@@ -44,7 +44,7 @@ struct string* appendHeapPtr(struct string* str, char* ptr, int ptrLen){
 	free(ptr);
 	return str;
 }
-struct string* appendStr(struct string* str, struct string* toAppend){
+String* appendStr(String* str, struct string* toAppend){
 	for (int i = 0; i < toAppend.length; i++){
 		if (str->length == str->maxCapacity){
 			growStr(str, (str->length+1) / 2);  
@@ -54,11 +54,10 @@ struct string* appendStr(struct string* str, struct string* toAppend){
 	}
 	return str;	
 }	
-void growStr(struct string* str, int inc){
+void growStr(String* str, int inc){
 	int newL = inc + str->maxCapacity;
 	char* nStr = malloc(newL);
 	for (int i = 0; i < str->len; i++){
 		nStr[i] = str->string[i];
 	}
 }
-
