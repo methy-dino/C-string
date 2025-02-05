@@ -85,22 +85,36 @@ String* appendHeapStr(String* str, String* toAppend){
 	return str;	
 }
 void removeCharAt(String* str,int index){
-	for (int i = index; i < str->length; i++){
+	for (int i = index + 1; i < str->length; i++){
 		str->string[i-1] = str->string[i];
 	}
 	str->length--;
 }
 void removeChar(String* str, char character){
 	int removed = 0;
-	if (str->string[0] == character){
-		removed++;
-	}
-	for (int i = 1; i < str->length-removed; i++){
-		str->string[i-removed] = str->string[i];
-		if (str->string[i] == character){
+	for (int i = 0; i < str->length-removed; i++){
+		while (str->string[i+removed] == character){
 			removed++;
 		}
+		str->string[i] = str->string[i+removed];
 	}
 	str->length -= removed;
+	str->string[str->length] = '\0';
+}
+void removeSubStr(String* str, String* subStr){
+	int j = 0;
+	int removed = 0;
+	for (int i = 0; i < str->length; i++){
+		j = 0;
+		while (str->string[i+j] == subStr->string[j]){	
+			j++;
+			if (subStr->string[j+1] == '\0'){
+				i += j+1;
+				removed+= subStr->length;
+			}
+		}
+		str->string[i-removed] = str->string[i]; 	
+	}
+	str->length-=removed;
 	str->string[str->length] = '\0';
 }
