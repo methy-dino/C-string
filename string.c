@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 typedef struct string{
 	char* string;
 	int length;
@@ -21,6 +22,9 @@ String* emptyStr(int allocSize){
 	string->string = (char*)malloc(string->maxCapacity);
 	return string;
 }
+/* I don't know why someone would want to initialize like this.
+ * It is here anyways.
+*/
 String* charArrToStr(char arr[], int length){
 	String* string  = (String*)malloc(sizeof(struct string));
 	string->maxCapacity = length*1.5+1;
@@ -32,7 +36,16 @@ String* charArrToStr(char arr[], int length){
 	string->string[string->length] = '\0';
 	return string;
 }
-String* initString(char* pointer, int length){
+
+String* initStr(char* rawStr, int rawStrLen){
+	String* string  = (String*)malloc(sizeof(struct string));
+	string->maxCapacity = rawStrLen;
+	string->length = rawStrLen;
+	string->string = rawStr;
+	return string;
+}
+
+String* buildStr(char* pointer, int length){
 		String* string  = (String*)malloc(sizeof(struct string));
 		string->maxCapacity = length*1.5+1;
 		string->length = length;
@@ -43,7 +56,7 @@ String* initString(char* pointer, int length){
 	string->string[string->length] = '\0';
 	return string;
 }
-String* appendArr(String* str, char chars[], int arrL){
+void appendArr(String* str, char chars[], int arrL){
 	if (str->maxCapacity < str->length + arrL){
 		growStr(str, (str->length+1) / 2);
 	}
@@ -53,7 +66,8 @@ String* appendArr(String* str, char chars[], int arrL){
 	}
 	str->string[str->length] = '\0';
 }
-String* appendPtr(String* str, char* ptr, int ptrLen){
+
+void appendPtr(String* str, char* ptr, int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
 		 growStr(str, ptrLen * 1.5);
 	}
@@ -62,9 +76,8 @@ String* appendPtr(String* str, char* ptr, int ptrLen){
 		str->length++;
 	}
 	str->string[str->length] = '\0';
-	return str;
 }
-String* appendHeapPtr(String* str, char* ptr, int ptrLen){
+void appendHeapPtr(String* str, char* ptr, int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
 		 growStr(str, ptrLen * 1.5);
 	}
@@ -77,9 +90,9 @@ String* appendHeapPtr(String* str, char* ptr, int ptrLen){
 	}
 	str->string[str->length] = '\0';
 	free(ptr);
-	return str;
 }
-String* appendStr(String* str, String* toAppend){
+
+void appendStr(String* str, String* toAppend){
 	// avoid unnecessary grow checks
 	if (str->maxCapacity < str->length + toAppend->length){
 	 growStr(str, toAppend->length * 1.5);	
@@ -88,9 +101,9 @@ String* appendStr(String* str, String* toAppend){
 		str->string[str->length] = toAppend->string[i];
 		str->length++;
 	}
-	str->string[str->length] = '\0';
-	return str;	
+	str->string[str->length] = '\0';	
 }
+
 String* concatStr(String* str, String* toAppend){
 	if (str->maxCapacity < str->length + toAppend->length){
 	 growStr(str, toAppend->length * 1.5);
@@ -104,12 +117,14 @@ String* concatStr(String* str, String* toAppend){
 	free(toAppend);
 	return str;	
 }
+
 void removeCharAt(String* str,int index){
 	for (int i = index + 1; i < str->length; i++){
 		str->string[i-1] = str->string[i];
 	}
 	str->length--;
 }
+
 void removeChar(String* str, char character){
 	int removed = 0;
 	for (int i = 0; i < str->length-removed; i++){
@@ -121,6 +136,7 @@ void removeChar(String* str, char character){
 	str->length -= removed;
 	str->string[str->length] = '\0';
 }
+
 void removeSubStr(String* str, String* subStr){
 	int j = 0;
 	int removed = 0;
@@ -138,6 +154,7 @@ void removeSubStr(String* str, String* subStr){
 	str->length-=removed;
 	str->string[str->length] = '\0';
 }
+
 int indexOfChar(String* str, char character, int startIndex){
 	int start = (str->length + startIndex) % str->length;
 	while (start < str->length){
@@ -148,6 +165,7 @@ int indexOfChar(String* str, char character, int startIndex){
 	}
 	return -1;
 }
+
 int lastIndexOfChar(String* str, char character, int endOffset){
 	int start = (str->length + endOffset - 1) % str->length;
 	while (start > -1){
@@ -158,6 +176,7 @@ int lastIndexOfChar(String* str, char character, int endOffset){
 	}
 	return -1;
 }
+
 int indexOfStr(String* str, String* subStr, int startIndex){
 	int start = (str->length + startIndex) % str->length;
 	int i = 0;
@@ -176,6 +195,7 @@ int indexOfStr(String* str, String* subStr, int startIndex){
 	}
 	return -1;
 }
+
 int LastindexOfStr(String* str, String* subStr, int endOffset){
 	int start = (str->length + endOffset - 1) % str->length;
 	int i = subStr->length;
@@ -183,11 +203,52 @@ int LastindexOfStr(String* str, String* subStr, int endOffset){
 		while (str->string[start-i] == subStr->string[subStr->length - i]){
 			i--;
 			if (i == 1){
-				return start;
+				return start-subStr->length;
 			}	
 		}
 		start--;
 		i = subStr->length;
 	}
 	return -1;
+}
+void replaceChar(String* str, char target, char sub){
+	for (int i = 0; i < str->length; i++){
+		if (str->string[i] == target){
+			str->string[i] = sub;
+		}
+	}
+}
+void replaceSubStr(String* str, String* target, String* sub){
+	int added = 0;
+	int j = 0;
+	printf("%d \n", target->length);
+	for (int i = 0; i < str->length - target->length; i++){
+		j = 0;
+		while (str->string[i+j] == target->string[j]){
+			j++;
+			if (j == target->length){
+				printf("%d \n", i);
+				if (str->maxCapacity < str->length + sub->length - target->length){
+					// allocate extra space for less reallocs (heap slow!1!1!1)
+					growStr(str, (sub->length - target->length)*2);
+				}
+				str->length += sub->length - target->length;
+				str->string[str->length] = '\0';
+				// has to be backwards since we are moving chars further.
+				for (int k = str->length-1; k > i+sub->length-1; k--){
+					str->string[k] = str->string[k - sub->length + target->length];
+				}
+				for (int k = 0; k < sub->length; k++){
+					str->string[i+k] = sub->string[k];
+				}
+				i += sub->length - target->length;
+				
+			}
+		}
+	}
+	str->string[str->length] = '\0';
+}
+void discardStr(String* str){
+	free(str->string);
+	free(str);
 }
