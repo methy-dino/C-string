@@ -24,6 +24,8 @@ int lastIndexOfChar(String* str, char character, int endOffset);
 int indexOfStr(String* str, String* subStr, int startIndex);
 int lastIndexOfStr(String* str, String* subStr, int endOffset);
 void replaceSubStr(String* str, String* target, String* sub);
+void toUpperCase(String* str);
+void toLowerCase(String* str);
 int strCompare(String* str1, String* str2);
 String* cloneStr(String* str);
 void discardStr(String* str);

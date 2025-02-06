@@ -287,6 +287,26 @@ int strCompare(String* str1, String* str2){
 	}
 	return 0;
 }
+void toUpperCase(String* str){
+	// storing the character codes prevents errors due to different standards.
+	int Acode = 'A';
+	int aCode = 'a';
+	for (int i = 0; i < str->length; i++){
+		if (aCode <= str->string[i] && str->string[i] < aCode + 26){
+			str->string[i] = Acode + (str->string[i] - aCode);
+		}
+	}
+}
+void toLowerCase(String* str){
+	// storing the character codes prevents errors due to different standards.
+	int Acode = 'A';
+	int aCode = 'a';
+	for (int i = 0; i < str->length; i++){
+		if (Acode <= str->string[i] && str->string[i] < Acode + 26){
+			str->string[i] = aCode + (str->string[i] - Acode);
+		}
+	}
+}
 /* clones a string, will not clone content after String.length (Incase you are storing data there) */
 String* cloneStr(String* str){
 	String* nStr = (String*) malloc(sizeof(String));
@@ -298,6 +318,9 @@ String* cloneStr(String* str){
 	}
 	nStr->string[nStr->length] = '\0';
 	return nStr;
+}
+int split(String* regEx, String* targetArr){
+	return -1;
 }
 void discardStr(String* str){
 	free(str->string);

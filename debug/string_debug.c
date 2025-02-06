@@ -118,6 +118,26 @@ String* concatStr(String* str, String* toAppend){
 	free(toAppend);
 	return str;	
 }
+void toUpperCase(String* str){
+	// storing the character codes prevents errors due to different standards.
+	int Acode = 'A';
+	int aCode = 'a';
+	for (int i = 0; i < str->length; i++){
+		if (aCode <= str->string[i] && str->string[i] < aCode + 26){
+			str->string[i] = Acode + (str->string[i] - aCode);
+		}
+	}
+}
+void toLowerCase(String* str){
+	// storing the character codes prevents errors due to different standards.
+	int Acode = 'A';
+	int aCode = 'a';
+	for (int i = 0; i < str->length; i++){
+		if (Acode <= str->string[i] && str->string[i] < Acode + 26){
+			str->string[i] = aCode + (str->string[i] - Acode);
+		}
+	}
+}
 /* start inclusive, end exclusive, returns string built with exact capacity.
 */
 String* subStr(String* str, int start, int end){
