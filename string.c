@@ -117,6 +117,30 @@ String* concatStr(String* str, String* toAppend){
 	free(toAppend);
 	return str;	
 }
+/* start inclusive, end exclusive, returns string built with exact capacity.
+*/
+String* subStr(String* str, int start, int end){
+	start = str->length % start;
+	end = str->length % end;
+	String* ret = malloc(sizeof(String));
+	ret->string = (char*) malloc(sizeof(char) * (start-end));
+	for (int i = 0; i < end-start; i++){
+		ret->string[i] = str->string[i+start];
+	}
+	return subStr;
+}
+/* start is inclusive, end is exclusive, as by default.
+ * not to be confused with removeStr(String*, String*)
+ * as a safe guard, ints are converted to % str->length 
+ */
+void removeSubStr(String* str, int start, int end){
+	start = str->length % start;
+	end = str->length % end;
+    str->length -= end-start;
+	for (int i = start; i < str->length; i++){
+		str->string[i] = str->string[i+end-start];
+	}
+}
 
 void removeCharAt(String* str,int index){
 	for (int i = index + 1; i < str->length; i++){
@@ -137,7 +161,7 @@ void removeChar(String* str, char character){
 	str->string[str->length] = '\0';
 }
 
-void removeSubStr(String* str, String* subStr){
+void removeStr(String* str, String* subStr){
 	int j = 0;
 	int removed = 0;
 	for (int i = 0; i < str->length; i++){
@@ -221,13 +245,11 @@ void replaceChar(String* str, char target, char sub){
 void replaceSubStr(String* str, String* target, String* sub){
 	int added = 0;
 	int j = 0;
-	printf("%d \n", target->length);
 	for (int i = 0; i < str->length - target->length; i++){
 		j = 0;
 		while (str->string[i+j] == target->string[j]){
 			j++;
 			if (j == target->length){
-				printf("%d \n", i);
 				if (str->maxCapacity < str->length + sub->length - target->length){
 					// allocate extra space for less reallocs (heap slow!1!1!1)
 					growStr(str, (sub->length - target->length)*2);
