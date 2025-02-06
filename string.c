@@ -123,11 +123,13 @@ String* subStr(String* str, int start, int end){
 	start = str->length % start;
 	end = str->length % end;
 	String* ret = malloc(sizeof(String));
-	ret->string = (char*) malloc(sizeof(char) * (start-end));
+	ret->length = end - start;
+	ret->maxCapacity = ret->length;
+	ret->string = (char*) malloc(sizeof(char) * ret->length);
 	for (int i = 0; i < end-start; i++){
 		ret->string[i] = str->string[i+start];
 	}
-	return subStr;
+	return ret;
 }
 /* start is inclusive, end is exclusive, as by default.
  * not to be confused with removeStr(String*, String*)
@@ -269,6 +271,33 @@ void replaceSubStr(String* str, String* target, String* sub){
 		}
 	}
 	str->string[str->length] = '\0';
+}
+/* returns 1 if the strings are equal, otherwise returns 0.
+ * does not compare after String.length, it may contain trash data after that.
+ * trash data is non-zeroed and unsanitized.
+ */
+int strCompare(String* str1, String* str2){
+	if (str1->length == str2->length){
+		for (int i = 0; i < str1->length; i++){
+			if (str1->string[i] != str2->string[i]){
+			return 0;
+			}
+		}
+		return 1;
+	}
+	return 0;
+}
+/* clones a string, will not clone content after String.length (Incase you are storing data there) */
+String* cloneStr(String* str){
+	String* nStr = (String*) malloc(sizeof(String));
+	nStr->length = str->length;
+	nStr->maxCapacity = str->maxCapacity;
+	nStr->string = (char*) malloc(sizeof(char) * nStr->maxCapacity);
+	for (int i = 0; i < nStr->length; i++){
+		nStr->string[i] = str->string[i];
+	}
+	nStr->string[nStr->length] = '\0';
+	return nStr;
 }
 void discardStr(String* str){
 	free(str->string);
