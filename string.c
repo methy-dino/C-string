@@ -375,9 +375,16 @@ int strEqual(String* str1, String* str2){
 	}
 	return 0;
 }
-int strCompare(String* str1, String* str2){
-	int str1Val = 0;
-	int str2Val = 0;
+unsigned long long evaluateStr(String* str){
+	unsigned long long value = 0;
+	for (int i = 0; i < str->length; i++){
+		value += str->string[i];
+	}
+	return value;
+}
+long long strCompare(String* str1, String* str2){
+	unsigned long long str1Val = 0;
+	unsigned long long str2Val = 0;
 	int i;
 	if (str1->length > str2->length){
 		i = str1->length  - 1;
@@ -435,6 +442,17 @@ String* cloneStr(String* str){
 	}
 	nStr->string[nStr->length] = '\0';
 	return nStr;
+}
+unsigned long long hashStr(void* str){
+	unsigned long long value;
+	unsigned int charSize = sizeof(char);
+	charSize = charSize * 8;
+	String* string = (String*) str;
+	for (int i = 0; i < string->length; i++){
+		// the bit shift by charSize is to grant compatibility with other charset, such as UTF-16. 
+		value = ((value << charSize) | string->string[i]) & 1000000007;
+	}
+	return value;
 }
 void discardStr(String* str){
 	free(str->string);
