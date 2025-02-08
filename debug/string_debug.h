@@ -29,6 +29,7 @@ void replaceStr(String* str, String* target, String* sub);
 void replaceFirstStr(String* str, String* target, String* sub);
 void replaceLastStr(String* str, String* target, String* sub);
 int strEqual(String* str1, String* str2);
+int strCompare(String* str1, String* str2);
 void toUpperCase(String* str);
 void toLowerCase(String* str);
 String* cloneStr(String* str);

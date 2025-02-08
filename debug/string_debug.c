@@ -385,7 +385,7 @@ void replaceLastStr(String* str, String* target, String* sub){
  * does not compare after String.length, it may contain trash data after that.
  * trash data is non-zeroed and unsanitized.
  */
-int strCompare(String* str1, String* str2){
+int strEqual(String* str1, String* str2){
 	if (str1->length == str2->length){
 		for (int i = 0; i < str1->length; i++){
 			if (str1->string[i] != str2->string[i]){
@@ -395,6 +395,35 @@ int strCompare(String* str1, String* str2){
 		return 1;
 	}
 	return 0;
+}
+int strCompare(String* str1, String* str2){
+	int str1Val = 0;
+	int str2Val = 0;
+	int i;
+	if (str1->length > str2->length){
+		i = str1->length  - 1;
+		while (i > str2->length){
+			str1Val += str1->string[i];
+			i--;
+		}
+		while (i > -1){
+			str1Val += str1->string[i];
+			str2Val += str2->string[i];
+			i--;
+		}
+	} else {
+		i = str2->length  - 1;
+		while (i > str1->length){
+			str2Val += str2->string[i];
+			i--;
+		}
+		while (i > -1){
+			str1Val += str1->string[i];
+			str2Val += str2->string[i];
+			i--;
+		}
+	}
+	return str1Val - str2Val;
 }
 /* clones a string, will not clone content after String.length (Incase you are storing data there) */
 String* cloneStr(String* str){
