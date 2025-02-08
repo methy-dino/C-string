@@ -180,7 +180,45 @@ void removeStr(String* str, String* subStr){
 	str->length-=removed;
 	str->string[str->length] = '\0';
 }
-
+void removeFirstStr(String* str, String* subStr){
+	int j = 0;
+	int removed = 0;
+	for (int i = 0; i < str->length; i++){
+		j = 0;
+		while (str->string[i+j] == subStr->string[j]){	
+			j++;
+			if (j+1 == subStr->length){
+				i += j+1;
+				removed+= subStr->length;
+				while (i < str->length){
+					str->string[i-removed] = str->string[i];
+				}
+				str->length -= removed;
+				str->string[str->length] = '\0';
+			}
+		}
+	}
+}
+void removeLastStr(String* str, String* subStr){
+	int j = 1;
+	int removed = 0;
+	for (int i = str->length; i > 0; i--){
+		while (str->string[i - j] == subStr->string[subStr->length - j]){
+			j++;
+			if (subStr->length == j){
+				removed += subStr->length;
+				while (i < str->length){
+					str->string[i-removed] = str->string[i];
+					i++;
+				}
+				str->length-=removed;
+				str->string[str->length] = '\0';
+				// loop break.
+				return;
+			}
+		}
+	}
+}
 int indexOfChar(String* str, char character, int startIndex){
 	int start = (str->length + startIndex) % str->length;
 	while (start < str->length){
@@ -244,8 +282,7 @@ void replaceChar(String* str, char target, char sub){
 		}
 	}
 }
-void replaceSubStr(String* str, String* target, String* sub){
-	int added = 0;
+void replaceStr(String* str, String* target, String* sub){
 	int j = 0;
 	for (int i = 0; i < str->length - target->length; i++){
 		j = 0;
@@ -272,11 +309,62 @@ void replaceSubStr(String* str, String* target, String* sub){
 	}
 	str->string[str->length] = '\0';
 }
+void replaceFirstStr(String* str, String* target, String* sub){
+	int j = 0;
+	for (int i = 0; i < str->length - target->length; i++){
+		j = 0;
+		while (str->string[i+j] == target->string[j]){
+			j++;
+			if (j == target->length){
+				if (str->maxCapacity < str->length + sub->length - target->length){
+					//there is no need for extra allocation.
+					growStr(str, (sub->length - target->length));
+				}
+				str->length += sub->length - target->length;
+				str->string[str->length] = '\0';
+				for (int k = str->length-1; k > i+sub->length-1; k--){
+					str->string[k] = str->string[k - sub->length + target->length];
+				}
+				for (int k = 0; k < sub->length; k++){
+					str->string[i+k] = sub->string[k];
+				}
+				i += sub->length - target->length;
+				return;
+			}
+		}
+	}
+	str->string[str->length] = '\0';
+}
+void replaceLastStr(String* str, String* target, String* sub){
+	int j = 1;
+	for (int i = str->length; i > target->length-1; i--){
+		j = 1;
+		while (str->string[i-j] == target->string[target->length - j]){
+			j++;
+			if (j == target->length+1){
+				if (str->maxCapacity < str->length + sub->length - target->length){
+					growStr(str, (sub->length - target->length));
+				}
+				str->length += sub->length - target->length;
+				i -= target->length;
+				str->string[str->length] = '\0';
+				for (int k = str->length-1; k > i+sub->length-1; k--){
+					str->string[k] = str->string[k - sub->length + target->length];
+				}
+				for (int k = 0; k < sub->length; k++){
+					str->string[i+k] = sub->string[k];
+				}
+				return;
+			}
+		}
+	}
+	str->string[str->length] = '\0';
+}
 /* returns 1 if the strings are equal, otherwise returns 0.
  * does not compare after String.length, it may contain trash data after that.
  * trash data is non-zeroed and unsanitized.
  */
-int strCompare(String* str1, String* str2){
+int strEqual(String* str1, String* str2){
 	if (str1->length == str2->length){
 		for (int i = 0; i < str1->length; i++){
 			if (str1->string[i] != str2->string[i]){
@@ -318,9 +406,6 @@ String* cloneStr(String* str){
 	}
 	nStr->string[nStr->length] = '\0';
 	return nStr;
-}
-int split(String* regEx, String* targetArr){
-	return -1;
 }
 void discardStr(String* str){
 	free(str->string);

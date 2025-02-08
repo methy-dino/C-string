@@ -201,7 +201,45 @@ void removeStr(String* str, String* subStr){
 	str->length-=removed;
 	str->string[str->length] = '\0';
 }
-
+void removeFirstStr(String* str, String* subStr){
+	int j = 0;
+	int removed = 0;
+	for (int i = 0; i < str->length; i++){
+		j = 0;
+		while (str->string[i+j] == subStr->string[j]){	
+			j++;
+			if (j+1 == subStr->length){
+				i += j+1;
+				removed+= subStr->length;
+				while (i < str->length){
+					str->string[i-removed] = str->string[i];
+				}
+				str->length -= removed;
+				str->string[str->length] = '\0';
+			}
+		}
+	}
+}
+void removeLastStr(String* str, String* subStr){
+	int j = 1;
+	int removed = 0;
+	for (int i = str->length; i > 0; i--){
+		while (str->string[i - j] == subStr->string[subStr->length - j]){
+			j++;
+			if (subStr->length == j){
+				removed += subStr->length;
+				while (i < str->length){
+					str->string[i-removed] = str->string[i];
+					i++;
+				}
+				str->length-=removed;
+				str->string[str->length] = '\0';
+				// loop break.
+				return;
+			}
+		}
+	}
+}
 int indexOfChar(String* str, char character, int startIndex){
 	int start = (str->length + startIndex) % str->length;
 	while (start < str->length){
@@ -265,10 +303,8 @@ void replaceChar(String* str, char target, char sub){
 		}
 	}
 }
-void replaceSubStr(String* str, String* target, String* sub){
-	int added = 0;
+void replaceStr(String* str, String* target, String* sub){
 	int j = 0;
-	printf("%d \n", target->length);
 	for (int i = 0; i < str->length - target->length; i++){
 		j = 0;
 		while (str->string[i+j] == target->string[j]){
@@ -278,20 +314,68 @@ void replaceSubStr(String* str, String* target, String* sub){
 					// allocate extra space for less reallocs (heap slow!1!1!1)
 					growStr(str, (sub->length - target->length)*2);
 				}
-				printf("before change: %s \n", str->string);
 				str->length += sub->length - target->length;
-				str->string[str->length] = '\0';	
+				str->string[str->length] = '\0';
 				// has to be backwards since we are moving chars further.
 				for (int k = str->length-1; k > i+sub->length-1; k--){
 					str->string[k] = str->string[k - sub->length + target->length];
 				}
-				printf("in-between: %s \n", str->string);
 				for (int k = 0; k < sub->length; k++){
 					str->string[i+k] = sub->string[k];
 				}
-				printf("after: %s \n",str->string);
 				i += sub->length - target->length;
 				
+			}
+		}
+	}
+	str->string[str->length] = '\0';
+}
+void replaceFirstStr(String* str, String* target, String* sub){
+	int j = 0;
+	for (int i = 0; i < str->length - target->length; i++){
+		j = 0;
+		while (str->string[i+j] == target->string[j]){
+			j++;
+			if (j == target->length){
+				if (str->maxCapacity < str->length + sub->length - target->length){
+					//there is no need for extra allocation.
+					growStr(str, (sub->length - target->length));
+				}
+				str->length += sub->length - target->length;
+				str->string[str->length] = '\0';
+				for (int k = str->length-1; k > i+sub->length-1; k--){
+					str->string[k] = str->string[k - sub->length + target->length];
+				}
+				for (int k = 0; k < sub->length; k++){
+					str->string[i+k] = sub->string[k];
+				}
+				i += sub->length - target->length;
+				return;
+			}
+		}
+	}
+	str->string[str->length] = '\0';
+}
+void replaceLastStr(String* str, String* target, String* sub){
+	int j = 1;
+	for (int i = str->length; i > target->length-1; i--){
+		j = 1;
+		while (str->string[i-j] == target->string[target->length - j]){
+			j++;
+			if (j == target->length+1){
+				if (str->maxCapacity < str->length + sub->length - target->length){
+					growStr(str, (sub->length - target->length));
+				}
+				str->length += sub->length - target->length;
+				i -= target->length;
+				str->string[str->length] = '\0';
+				for (int k = str->length-1; k > i+sub->length-1; k--){
+					str->string[k] = str->string[k - sub->length + target->length];
+				}
+				for (int k = 0; k < sub->length; k++){
+					str->string[i+k] = sub->string[k];
+				}
+				return;
 			}
 		}
 	}
