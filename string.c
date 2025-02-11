@@ -1,21 +1,32 @@
 #include <stdlib.h>
 #include <stdio.h>
+#define FORCE_BREAK 2;
 typedef struct string{
 	char* string;
-	int length;
-	int maxCapacity;
+	unsigned int length;
+	unsigned int maxCapacity;
 }String;
-void growStr(String* str, int inc){
-	int newL = inc + str->maxCapacity;
+void growStr(String* str, unsigned int inc){
+	unsigned int newL = inc + str->maxCapacity;
 	char* nStr = (char*)malloc(newL);
-	for (int i = 0; i < str->length; i++){
+	for (unsigned int i = 0; i < str->length; i++){
 		nStr[i] = str->string[i];
 	}
 	free(str->string);
 	str->string = nStr;
 	str->string[str->length] = '\0';
 }
-String* emptyStr(int allocSize){
+void growStrClean(String* str, unsigned int inc){
+	unsigned int newL = inc + str->maxCapacity;
+	char* nStr = (char*)calloc(newL, newL * sizeof(char));
+	for (unsigned int i = 0; i < str->length; i++){
+		nStr[i] = str->string[i];
+	}
+	free(str->string);
+	str->string = nStr;
+	str->string[str->length] = '\0';
+}
+String* emptyStr(unsigned int allocSize){
 	String* string  = (String*)malloc(sizeof(struct string));
 	string->maxCapacity = allocSize;
 	string->length = 0;
@@ -25,19 +36,19 @@ String* emptyStr(int allocSize){
 /* I don't know why someone would want to initialize like this.
  * It is here anyways.
 */
-String* charArrToStr(char arr[], int length){
+String* charArrToStr(char arr[], unsigned int length){
 	String* string  = (String*)malloc(sizeof(struct string));
 	string->maxCapacity = length*1.5+1;
 	string->length = length;
 	string->string = (char*)malloc(string->maxCapacity);
-	for (int i = 0; i < length; i++){
+	for (unsigned int i = 0; i < length; i++){
 		string->string[i] = arr[i];
 	}
 	string->string[string->length] = '\0';
 	return string;
 }
 
-String* initStr(char* rawStr, int rawStrLen){
+String* initStr(char* rawStr, unsigned int rawStrLen){
 	String* string  = (String*)malloc(sizeof(struct string));
 	string->maxCapacity = rawStrLen;
 	string->length = rawStrLen;
@@ -45,43 +56,58 @@ String* initStr(char* rawStr, int rawStrLen){
 	return string;
 }
 
-String* buildStr(char* pointer, int length){
+String* buildStr(char* pointer, unsigned int length){
 		String* string  = (String*)malloc(sizeof(struct string));
 		string->maxCapacity = length*1.5+1;
 		string->length = length;
 		string->string = (char*)malloc(string->maxCapacity);
-	for (int i = 0; i < length; i++){
+	for (unsigned int i = 0; i < length; i++){
 		string->string[i] = pointer[i];
 	}
 	string->string[string->length] = '\0';
 	return string;
 }
-void appendArr(String* str, char chars[], int arrL){
+void appendArr(String* str, char chars[], unsigned int arrL){
 	if (str->maxCapacity < str->length + arrL){
 		growStr(str, (str->length+1) / 2);
 	}
-	for (int i = 0; i < arrL; i++){
+	for (unsigned int i = 0; i < arrL; i++){
 		str->string[str->length] = chars[i];
 		str->length++;
 	}
 	str->string[str->length] = '\0';
 }
+int appendNoLen(String* str, char* ptr, unsigned int max){
+	unsigned int i = 0;
+	while (ptr[i] != '\0'){
+		if (str->length == str->maxCapacity){
+			growStr(str, 5);
+		}
+		str->string[str->length] = ptr[i];
+		str->length++;
+		i++;
+		if (max != 0 && i == max){
+			return FORCE_BREAK;
+		}
+	}
+	return 0;
+}
 
-void appendPtr(String* str, char* ptr, int ptrLen){
+void appendPtr(String* str, char* ptr, unsigned int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
 		 growStr(str, ptrLen * 1.5);
 	}
-	for (int i = 0; i < ptrLen; i++){	
+	for (unsigned int i = 0; i < ptrLen; i++){	
 		str->string[str->length] = ptr[i];
 		str->length++;
 	}
 	str->string[str->length] = '\0';
 }
-void appendHeapPtr(String* str, char* ptr, int ptrLen){
+void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
 		 growStr(str, ptrLen * 1.5);
 	}
-	for (int i = 0; i < ptrLen; i++){
+	for (unsigned int i = 0; i < ptrLen; i++){
 		if (str->length == str->maxCapacity){
 			growStr(str, (str->length+1) / 2);   
 		}
@@ -97,7 +123,7 @@ void appendStr(String* str, String* toAppend){
 	if (str->maxCapacity < str->length + toAppend->length){
 	 growStr(str, toAppend->length * 1.5);	
 	}
-	for (int i = 0; i < toAppend->length; i++){
+	for (unsigned int i = 0; i < toAppend->length; i++){
 		str->string[str->length] = toAppend->string[i];
 		str->length++;
 	}
@@ -108,7 +134,7 @@ String* concatStr(String* str, String* toAppend){
 	if (str->maxCapacity < str->length + toAppend->length){
 	 growStr(str, toAppend->length * 1.5);
 	}
-	for (int i = 0; i < toAppend->length; i++){
+	for (unsigned int i = 0; i < toAppend->length; i++){
 		str->string[str->length] = toAppend->string[i];
 		str->length++;
 	}
@@ -119,14 +145,14 @@ String* concatStr(String* str, String* toAppend){
 }
 /* start inclusive, end exclusive, returns string built with exact capacity.
 */
-String* subStr(String* str, int start, int end){
+String* subStr(String* str, unsigned int start, unsigned int end){
 	start = str->length % start;
 	end = str->length % end;
 	String* ret = malloc(sizeof(String));
 	ret->length = end - start;
 	ret->maxCapacity = ret->length;
 	ret->string = (char*) malloc(sizeof(char) * ret->length);
-	for (int i = 0; i < end-start; i++){
+	for (unsigned int i = 0; i < end-start; i++){
 		ret->string[i] = str->string[i+start];
 	}
 	return ret;
@@ -135,25 +161,25 @@ String* subStr(String* str, int start, int end){
  * not to be confused with removeStr(String*, String*)
  * as a safe guard, ints are converted to % str->length 
  */
-void removeSubStr(String* str, int start, int end){
+void removeSubStr(String* str, unsigned int start, unsigned int end){
 	start = str->length % start;
 	end = str->length % end;
     str->length -= end-start;
-	for (int i = start; i < str->length; i++){
+	for (unsigned int i = start; i < str->length; i++){
 		str->string[i] = str->string[i+end-start];
 	}
 }
 
-void removeCharAt(String* str,int index){
-	for (int i = index + 1; i < str->length; i++){
+void removeCharAt(String* str, unsigned int index){
+	for (unsigned int i = index + 1; i < str->length; i++){
 		str->string[i-1] = str->string[i];
 	}
 	str->length--;
 }
 
 void removeChar(String* str, char character){
-	int removed = 0;
-	for (int i = 0; i < str->length-removed; i++){
+	unsigned int removed = 0;
+	for (unsigned int i = 0; i < str->length-removed; i++){
 		while (str->string[i+removed] == character){
 			removed++;
 		}
@@ -164,9 +190,9 @@ void removeChar(String* str, char character){
 }
 
 void removeStr(String* str, String* subStr){
-	int j = 0;
-	int removed = 0;
-	for (int i = 0; i < str->length; i++){
+	unsigned int j = 0;
+	unsigned int removed = 0;
+	for (unsigned int i = 0; i < str->length; i++){
 		j = 0;
 		while (str->string[i+j] == subStr->string[j]){	
 			j++;
@@ -181,9 +207,9 @@ void removeStr(String* str, String* subStr){
 	str->string[str->length] = '\0';
 }
 void removeFirstStr(String* str, String* subStr){
-	int j = 0;
-	int removed = 0;
-	for (int i = 0; i < str->length; i++){
+	unsigned int j = 0;
+	unsigned int removed = 0;
+	for (unsigned int i = 0; i < str->length; i++){
 		j = 0;
 		while (str->string[i+j] == subStr->string[j]){	
 			j++;
@@ -200,9 +226,9 @@ void removeFirstStr(String* str, String* subStr){
 	}
 }
 void removeLastStr(String* str, String* subStr){
-	int j = 1;
-	int removed = 0;
-	for (int i = str->length; i > 0; i--){
+	unsigned int j = 1;
+	unsigned int removed = 0;
+	for (unsigned int i = str->length; i > 0; i--){
 		while (str->string[i - j] == subStr->string[subStr->length - j]){
 			j++;
 			if (subStr->length == j){
@@ -219,8 +245,8 @@ void removeLastStr(String* str, String* subStr){
 		}
 	}
 }
-int indexOfChar(String* str, char character, int startIndex){
-	int start = (str->length + startIndex) % str->length;
+unsigned int indexOfChar(String* str, char character, int startIndex){
+	unsigned int start = (str->length + startIndex) % str->length;
 	while (start < str->length){
 		if (str->string[start] == character){
 			return start;
@@ -230,8 +256,8 @@ int indexOfChar(String* str, char character, int startIndex){
 	return -1;
 }
 
-int lastIndexOfChar(String* str, char character, int endOffset){
-	int start = (str->length + endOffset - 1) % str->length;
+unsigned int lastIndexOfChar(String* str, char character, int endOffset){
+	unsigned int start = (str->length + endOffset - 1) % str->length;
 	while (start > -1){
 		if (str->string[start] == character){
 			return start;
@@ -241,9 +267,9 @@ int lastIndexOfChar(String* str, char character, int endOffset){
 	return -1;
 }
 
-int indexOfStr(String* str, String* subStr, int startIndex){
-	int start = (str->length + startIndex) % str->length;
-	int i = 0;
+unsigned int indexOfStr(String* str, String* subStr, int startIndex){
+	unsigned int start = (str->length + startIndex) % str->length;
+	unsigned int i = 0;
 	while (start < str->length){
 /* must be done in this way, for cases like ("abaabaac", "abaac")
 * since the string start can be messed up by an check advancing after it
@@ -260,9 +286,9 @@ int indexOfStr(String* str, String* subStr, int startIndex){
 	return -1;
 }
 
-int LastindexOfStr(String* str, String* subStr, int endOffset){
-	int start = (str->length + endOffset - 1) % str->length;
-	int i = subStr->length;
+unsigned int LastindexOfStr(String* str, String* subStr, int endOffset){
+	unsigned int start = (str->length + endOffset - 1) % str->length;
+	unsigned int i = subStr->length;
 	while (start > 0){
 		while (str->string[start-i] == subStr->string[subStr->length - i]){
 			i--;
@@ -276,15 +302,15 @@ int LastindexOfStr(String* str, String* subStr, int endOffset){
 	return -1;
 }
 void replaceChar(String* str, char target, char sub){
-	for (int i = 0; i < str->length; i++){
+	for (unsigned int i = 0; i < str->length; i++){
 		if (str->string[i] == target){
 			str->string[i] = sub;
 		}
 	}
 }
 void replaceStr(String* str, String* target, String* sub){
-	int j = 0;
-	for (int i = 0; i < str->length - target->length; i++){
+	unsigned int j = 0;
+	for (unsigned int i = 0; i < str->length - target->length; i++){
 		j = 0;
 		while (str->string[i+j] == target->string[j]){
 			j++;
@@ -296,10 +322,10 @@ void replaceStr(String* str, String* target, String* sub){
 				str->length += sub->length - target->length;
 				str->string[str->length] = '\0';
 				// has to be backwards since we are moving chars further.
-				for (int k = str->length-1; k > i+sub->length-1; k--){
+				for (unsigned int k = str->length-1; k > i+sub->length-1; k--){
 					str->string[k] = str->string[k - sub->length + target->length];
 				}
-				for (int k = 0; k < sub->length; k++){
+				for (unsigned int k = 0; k < sub->length; k++){
 					str->string[i+k] = sub->string[k];
 				}
 				i += sub->length - target->length;
@@ -310,8 +336,8 @@ void replaceStr(String* str, String* target, String* sub){
 	str->string[str->length] = '\0';
 }
 void replaceFirstStr(String* str, String* target, String* sub){
-	int j = 0;
-	for (int i = 0; i < str->length - target->length; i++){
+	unsigned int j = 0;
+	for (unsigned int i = 0; i < str->length - target->length; i++){
 		j = 0;
 		while (str->string[i+j] == target->string[j]){
 			j++;
@@ -322,10 +348,10 @@ void replaceFirstStr(String* str, String* target, String* sub){
 				}
 				str->length += sub->length - target->length;
 				str->string[str->length] = '\0';
-				for (int k = str->length-1; k > i+sub->length-1; k--){
+				for (unsigned int k = str->length-1; k > i+sub->length-1; k--){
 					str->string[k] = str->string[k - sub->length + target->length];
 				}
-				for (int k = 0; k < sub->length; k++){
+				for (unsigned int k = 0; k < sub->length; k++){
 					str->string[i+k] = sub->string[k];
 				}
 				i += sub->length - target->length;
@@ -336,8 +362,8 @@ void replaceFirstStr(String* str, String* target, String* sub){
 	str->string[str->length] = '\0';
 }
 void replaceLastStr(String* str, String* target, String* sub){
-	int j = 1;
-	for (int i = str->length; i > target->length-1; i--){
+	unsigned int j = 1;
+	for (unsigned int i = str->length; i > target->length-1; i--){
 		j = 1;
 		while (str->string[i-j] == target->string[target->length - j]){
 			j++;
@@ -348,10 +374,10 @@ void replaceLastStr(String* str, String* target, String* sub){
 				str->length += sub->length - target->length;
 				i -= target->length;
 				str->string[str->length] = '\0';
-				for (int k = str->length-1; k > i+sub->length-1; k--){
+				for (unsigned int k = str->length-1; k > i+sub->length-1; k--){
 					str->string[k] = str->string[k - sub->length + target->length];
 				}
-				for (int k = 0; k < sub->length; k++){
+				for (unsigned int k = 0; k < sub->length; k++){
 					str->string[i+k] = sub->string[k];
 				}
 				return;
@@ -453,6 +479,21 @@ unsigned long long hashStr(void* str){
 		value = ((value << charSize) | string->string[i]) & 1000000007;
 	}
 	return value;
+}
+void reduceStr(String* str, unsigned int reduction){
+	unsigned int newL = str->maxCapacity - reduction;
+	char* newString = (char*) malloc(newL);
+	for (unsigned int i = 0; i < newL; i++){
+		newString[i] = str->string[i];
+	}
+	free(str->string);
+	str->string = newString;
+	str->maxCapacity = newL;
+	str->length = newL;
+	str->string[newL] = '\0';
+}
+void trimEnd(String* str){
+	reduceStr(str, str->maxCapacity - str->length);
 }
 void discardStr(String* str){
 	free(str->string);
