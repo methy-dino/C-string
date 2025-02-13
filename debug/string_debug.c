@@ -141,8 +141,8 @@ void toLowerCase(String* str){
 /* start inclusive, end exclusive, returns string built with exact capacity.
 */
 String* subStr(String* str, int start, int end){
-	start = str->length % start;
-	end = str->length % end;
+	start = start == 0 ? 0 : str->length % start;
+	end = end == 0 ? 0 : str->length % end;
 	String* ret = malloc(sizeof(String));
 	ret->length = end - start;
 	ret->maxCapacity = ret->length;
@@ -454,6 +454,20 @@ unsigned long long hashStr(void* str){
 		value = ((value << charSize) | string->string[i]) & 1000000007;
 	}
 	return value;
+}
+String* joinStr(String* strings, unsigned int len, String* separator){
+	String* joined;
+	int size = 0;
+	for (unsigned int i = 0; i < len; i++){
+		sizes += strings[i]->length;
+	}
+	size += (separator->length - 1) * (len - 1);
+	joined = emptyStr(size);
+	for (unsigned int i = 0; i < len; i++){
+		appendStr(joined, strings[i]);
+		appendStr(joined, separator);
+	}
+	return joined;
 }
 void discardStr(String* str){
 	free(str->string);
