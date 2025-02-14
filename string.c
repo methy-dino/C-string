@@ -473,7 +473,7 @@ unsigned long long hashStr(void* str){
 	unsigned long long value;
 	unsigned int charSize = sizeof(char);
 	charSize = charSize * 8;
-	String* string = (String*) str;
+String* string = (String*) str;
 	for (int i = 0; i < string->length; i++){
 		// the bit shift by charSize is to grant compatibility with other charset, such as UTF-16. 
 		value = ((value << charSize) | string->string[i]) & 1000000007;
@@ -482,17 +482,50 @@ unsigned long long hashStr(void* str){
 }
 String* joinStr(String* strings, unsigned int len, String* separator){
 	String* joined;
-	int size = 0;
+	int sizes = 0;
 	for (unsigned int i = 0; i < len; i++){
-		sizes += strings[i]->length;
+		sizes += strings[i].length;
 	}
-	size += (separator->length - 1) * (len - 1);
-	joined = emptyStr(size);
-	for (unsigned int i = 0; i < len; i++){
-		appendStr(joined, strings[i]);
+	sizes += (separator->length - 1) * (len - 1);
+	joined = emptyStr(sizes);
+	for (unsigned int i = 0; i < len-1; i++){
+		appendStr(joined, &strings[i]);
 		appendStr(joined, separator);
 	}
+	appendStr(joined, &strings[len-1]);
 	return joined;
+}
+String* splitByStr(String* str, String* divisor, unsigned int* len){
+	int i = 0;
+	int j = 0;
+	int prev = 0;
+	String* toRet = malloc(sizeof(String*) * 8);
+	int alloc = 8;
+	*len = 0;
+	while (i < str->length - divisor->length){
+		while(str->string[i+j] == divisor->string[j]){
+			j++;
+			if (divisor->string[j] == '\0'){
+				toRet[*len] = *subStr(str, prev, i);
+				i += j;
+				prev = i;
+				*len += 1;
+				if (*len == alloc){
+				alloc += 4;
+				String* newRet = malloc(sizeof(String*) * alloc);
+				for(int k = 0; k < *len; k++){
+					newRet[k] = toRet[k];
+					}
+				free(toRet);
+				toRet = newRet;
+				}
+			}
+		}
+		j = 0;
+	}
+	toRet[*len] = *subStr(str, prev, str->length);
+	*len += 1;
+	return toRet;
 }
 void reduceStr(String* str, unsigned int reduction){
 	unsigned int newL = str->maxCapacity - reduction;

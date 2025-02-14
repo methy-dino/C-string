@@ -40,4 +40,5 @@ unsigned long long hashStr(void* str);
 String* joinStr(String* strings, unsigned int len, String* separator);
 void reduceStr(String* str, unsigned int reduction);
 void trimEnd(String* str);
+String* splitByStr(String* str, String* divisor, unsigned int* len);
 void discardStr(String* str);

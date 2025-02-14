@@ -38,6 +38,7 @@ void toLowerCase(String* str);
 String* cloneStr(String* str);
 unsigned long long hashStr(void* str);
 String* joinStr(String* strings, unsigned int len, String* separator);
+String* splitByStr(String* str, String* divisor, unsigned int* len);
 void reduceStr(String* str, unsigned int reduction);
 void trimEnd(String* str);
 void discardStr(String* str);
