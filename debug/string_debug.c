@@ -23,6 +23,19 @@ String* emptyStr(int allocSize){
 	string->string = (char*)malloc(string->maxCapacity);
 	return string;
 }
+String* ptrToStr(char* ptr){
+	String* toRet = emptyStr(32);
+	unsigned int i = 0;
+	while (ptr[i] != '\0'){
+		toRet->string[toRet->length] = ptr[i];
+		toRet->length++;
+		if (toRet->length == maxCapacity){
+			growStr(toRet, 6);
+		}
+	}
+	toRet->string[toRet->length] = '\0';
+	return toRet;
+}
 /* I don't know why someone would want to initialize like this.
  * It is here anyways.
 */
@@ -281,7 +294,7 @@ int indexOfStr(String* str, String* subStr, int startIndex){
 	return -1;
 }
 
-int LastindexOfStr(String* str, String* subStr, int endOffset){
+int lastindexOfStr(String* str, String* subStr, int endOffset){
 	int start = (str->length + endOffset - 1) % str->length;
 	int i = subStr->length;
 	while (start > 0){

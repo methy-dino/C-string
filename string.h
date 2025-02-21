@@ -7,6 +7,7 @@ typedef struct string{
 void growStr(String* str, unsigned int inc);
 void growStrClean(String* str, unsigned int inc);
 String* emptyStr(int allocSize);
+String* ptrToStr(char* ptr);
 String* charArrToStr(char arr[], unsigned int length);
 String* initStr(char* rawStr, unsigned int rawStrLen);
 String* buildStr(char* pointer, unsigned int length);
