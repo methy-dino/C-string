@@ -1,4 +1,5 @@
 #pragma once
+#define FORCE_BREAK 2
 typedef struct string{
 	char* string;
 	unsigned int length;
@@ -6,7 +7,7 @@ typedef struct string{
 }String;
 void growStr(String* str, unsigned int inc);
 void growStrClean(String* str, unsigned int inc);
-String* emptyStr(int allocSize);
+String* emptyStr(unsigned int allocSize);
 String* ptrToStr(char* ptr);
 String* charArrToStr(char arr[], unsigned int length);
 String* initStr(char* rawStr, unsigned int rawStrLen);
@@ -31,7 +32,7 @@ unsigned int lastIndexOfStr(String* str, String* subStr, unsigned int endOffset)
 void replaceStr(String* str, String* target, String* sub);
 void replaceFirstStr(String* str, String* target, String* sub);
 void replaceLastStr(String* str, String* target, String* sub);
-int strEqual(String* str1, String* str2);
+unsigned int strEqual(String* str1, String* str2);
 unsigned long long evaluateStr(String* str);
 long long strCompare(String* str1, String* str2);
 void toUpperCase(String* str);
