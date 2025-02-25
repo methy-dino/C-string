@@ -276,7 +276,7 @@ unsigned int indexOfChar(String* str, char character, int startIndex){
 		}
 		start++;
 	}
-	return UINT_MAX;
+	return -1;
 }
 
 unsigned int lastIndexOfChar(String* str, char character, int endOffset){
@@ -287,7 +287,7 @@ unsigned int lastIndexOfChar(String* str, char character, int endOffset){
 		}
 		start--;
 	}
-	return UINT_MAX;
+	return -1;
 }
 
 unsigned int indexOfStr(String* str, String* subStr, unsigned int startIndex){
@@ -306,7 +306,7 @@ unsigned int indexOfStr(String* str, String* subStr, unsigned int startIndex){
 		i = 0;
 		start++;
 	}
-	return UINT_MAX;
+	return -1;
 }
 
 unsigned int lastIndexOfStr(String* str, String* subStr, unsigned int endOffset){
@@ -322,7 +322,7 @@ unsigned int lastIndexOfStr(String* str, String* subStr, unsigned int endOffset)
 		start--;
 		i = subStr->length;
 	}
-	return UINT_MAX;
+	return -1;
 }
 void replaceChar(String* str, char target, char sub){
 	for (unsigned int i = 0; i < str->length; i++){
@@ -483,19 +483,19 @@ unsigned long long hashStr(void* str){
 	}
 	return value;
 }
-String* joinStr(String* strings, unsigned int len, String* separator){
+String* joinStr(String** strings, unsigned int len, String* separator){
 	String* joined;
 	unsigned int sizes = 0;
 	for (unsigned int i = 0; i < len; i++){
-		sizes += strings[i].length;
+		sizes += strings[i]->length;
 	}
 	sizes += (separator->length - 1) * (len - 1);
 	joined = emptyStr(sizes);
 	for (unsigned int i = 0; i < len-1; i++){
-		appendStr(joined, &strings[i]);
+		appendStr(joined, strings[i]);
 		appendStr(joined, separator);
 	}
-	appendStr(joined, &strings[len-1]);
+	appendStr(joined, strings[len-1]);
 	return joined;
 }
 
@@ -546,7 +546,8 @@ void reduceStr(String* str, unsigned int reduction){
 void trimEnd(String* str){
 	reduceStr(str, str->maxCapacity - str->length);
 }
-void discardStr(String* str){
-	free(str->string);
+/* it is a void* to easier integration to libs with need of free functions. */
+void discardStr(void* str){
+	free(((String*)str)->string);
 	free(str);
 }

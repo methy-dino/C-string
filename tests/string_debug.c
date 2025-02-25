@@ -486,19 +486,19 @@ unsigned long long hashStr(void* str){
 	}
 	return value;
 }
-String* joinStr(String* strings, unsigned int len, String* separator){
+String* joinStr(String** strings, unsigned int len, String* separator){
 	String* joined;
 	unsigned int sizes = 0;
 	for (unsigned int i = 0; i < len; i++){
-		sizes += strings[i].length;
+		sizes += strings[i]->length;
 	}
 	sizes += (separator->length - 1) * (len - 1);
 	joined = emptyStr(sizes);
 	for (unsigned int i = 0; i < len-1; i++){
-		appendStr(joined, &strings[i]);
+		appendStr(joined, strings[i]);
 		appendStr(joined, separator);
 	}
-	appendStr(joined, &strings[len-1]);
+	appendStr(joined, strings[len-1]);
 	return joined;
 }
 
