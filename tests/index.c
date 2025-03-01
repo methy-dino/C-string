@@ -47,6 +47,7 @@ int testIndex(){
 	assert(prevInd+2 == index);
 	prevInd = index;
 	printf("I T10 passed\n");
+    debugPrintStr(similar, 3);
 	//printf("I T11 passed\n");
     return 0;
 }

@@ -553,13 +553,15 @@ void discardStr(void* str){
 }
 /* verbosity indicates what should be printed: 
  * 0 prints the string's contents before str->length, using default string printing.
- * 1 prints the string's address
+ * 1 prints the string's address, and it's capacity/filled portion.
  * 2 will also print control characters by it's literal representation, wrapped in ' (i.e '\n' instead of a new line), using a custom printer.
  * 3 will print characters after str->length, up to str->maxCapacity*/
 void debugPrintStr(String* str, int verbosity){
 	printf("-  -  -  -\n");
 	if (verbosity > 0){
 		printf("details of String at: %p\n", (void*) str);
+        printf("it's capacity is %u", str->maxCapacity);
+        printf(" of which %u are within the string's length\n", str->length);
 	} else {
 		printf("details of a String\n");
 	}
@@ -595,7 +597,9 @@ void debugPrintStr(String* str, int verbosity){
 					printf("%c", str->string[i]);
 					break;
 			}
+            i++;
 		}
+        printf("\n");
 	}
 	printf("-  -  -  -\n");
 }
