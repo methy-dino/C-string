@@ -83,6 +83,17 @@ void appendArr(String* str, char chars[], unsigned int arrL){
 	}
 	str->string[str->length] = '\0';
 }
+ 
+void appendSubPtr(String* str, char* ptr, int start, int end){
+	if (str->maxCapacity < str->length + (end-start)+1){
+		 growStr(str, (end-start) * 1.5);
+	}
+	for (int i = start; i < end; i++){	
+		str->string[str->length] = ptr[i];
+		str->length++;
+	}
+	str->string[str->length] = '\0';
+}
 
 int appendNoLen(String* str, char* ptr, unsigned int max){
 	unsigned int i = 0;

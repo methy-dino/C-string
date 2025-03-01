@@ -13,6 +13,7 @@ String* initStr(char* rawStr, unsigned int rawStrLen);
 String* buildStr(char* pointer, unsigned int length);
 void appendArr(String* str, char chars[], unsigned int arrL);
 unsigned int appendNoLen(String* str, char* ptr, unsigned int max);
+void appendSubPtr(String* str, char* ptr, int start, int end);
 void appendPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendStr(String* str, String* toAppend);
