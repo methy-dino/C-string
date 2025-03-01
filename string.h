@@ -43,3 +43,5 @@ void reduceStr(String* str, unsigned int reduction);
 void trimEnd(String* str);
 String* splitByStr(String* str, String* divisor, unsigned int* len);
 void discardStr(void* str);
+void debugPrintStr(String* str, int verbosity);
+
