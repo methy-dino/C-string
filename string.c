@@ -14,6 +14,7 @@ void growStr(String* str, unsigned int inc){
 	}
 	free(str->string);
 	str->string = nStr;
+    str->maxCapacity = newL;
 	str->string[str->length] = '\0';
 }
 String* emptyStr(unsigned int allocSize){
@@ -561,11 +562,6 @@ void discardStr(void* str){
 	free(((String*)str)->string);
 	free(str);
 }
-/* verbosity indicates what should be printed: 
- * 0 prints the string's contents before str->length, using default string printing.
- * 1 prints the string's address, and it's capacity/filled portion.
- * 2 will also print control characters by it's literal representation, wrapped in ' (i.e '\n' instead of a new line), using a custom printer.
- * 3 will print characters after str->length, up to str->maxCapacity*/
 void debugPrintStr(String* str, int verbosity){
 	printf("-  -  -  -\n");
 	if (verbosity > 0){
@@ -576,7 +572,7 @@ void debugPrintStr(String* str, int verbosity){
 		printf("details of a String\n");
 	}
 	if (verbosity < 2){
-		printf("it's contents are: %s\n", str->string);
+		printf("it's contents are: \"%s\"\n", str->string);
 	} else {
 		size_t i = 0;
 		size_t limit = 0;
@@ -585,7 +581,7 @@ void debugPrintStr(String* str, int verbosity){
 		} else {
 			limit = str->maxCapacity;
 		}
-		printf("it's contents are: ");
+		printf("it's contents are: \"");
 		while (i < limit){
 			switch (str->string[i]){
 				case '\0':
@@ -609,7 +605,7 @@ void debugPrintStr(String* str, int verbosity){
 			}
             i++;
 		}
-        printf("\n");
+        printf("\"\n");
 	}
 	printf("-  -  -  -\n");
 }

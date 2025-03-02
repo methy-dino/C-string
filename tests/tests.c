@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <limits.h>
+#include <string.h>
 int testIndex(){
 	printf("running index tests...\n");
 	String* similar = ptrToStr("abcbbbcbbc\0");
@@ -47,7 +48,22 @@ int testIndex(){
 	assert(prevInd+2 == index);
 	prevInd = index;
 	printf("I T10 passed\n");
+	appendNoLen(similar, "testtesttesttest", 64);
     debugPrintStr(similar, 3);
-	//printf("I T11 passed\n");
+    discardStr(similar);
+    printf("I T11 passed\n");
     return 0;
+}
+int replaceTest(){
+    String* str = ptrToStr("I read books every once in a while \n today I read Little Prince");
+    String* target = ptrToStr("read");
+    String* sub = ptrToStr("burn");
+    replaceFirstStr(str, target, sub);
+    assert(strcmp(str->string, "I burn books every once in a while \n today I read Little Prince") == 0);
+    printf("R T1 passed\n");
+    appendPtr(sub, "ed", 2);
+    replaceLastStr(str, target, sub);
+    assert(strcmp(str->string, "I burn books every once in a while \n today I burned Little Prince") == 0);
+    printf("R T2 passed\n");
+    debugPrintStr(str, 3);
 }

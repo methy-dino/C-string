@@ -8,7 +8,7 @@ typedef struct string{
 	unsigned int maxCapacity;
 }String;
 void growStr(String* str, unsigned int inc){
-	printf("growing string from %d to %d \n",str->length, inc);
+	printf("growing string from %d to %d \n",str->maxCapacity, inc+str->maxCapacity);
 	unsigned int newL = inc + str->maxCapacity;
 	char* nStr = (char*)malloc(newL);
 	for (unsigned int i = 0; i < str->length; i++){
@@ -16,6 +16,7 @@ void growStr(String* str, unsigned int inc){
 	}
 	free(str->string);
 	str->string = nStr;
+    str->maxCapacity = newL;
 	str->string[str->length] = '\0';
 }
 String* emptyStr(unsigned int allocSize){
@@ -28,10 +29,10 @@ String* emptyStr(unsigned int allocSize){
 String* ptrToStr(char* ptr){
 	String* toRet = emptyStr(32);
 	unsigned int i = 0;
-	while (ptr[i] != '\0'){
+	while (ptr[i] != '\0'){	
 		toRet->string[toRet->length] = ptr[i];
 		toRet->length++;
-		if (toRet->length == toRet->maxCapacity - 1){
+		if (toRet->length == toRet->maxCapacity-1){
 			growStr(toRet, 6);
 		}
         i++;
@@ -579,7 +580,7 @@ void debugPrintStr(String* str, int verbosity){
 		printf("details of a String\n");
 	}
 	if (verbosity < 2){
-		printf("it's contents are: %s\n", str->string);
+		printf("it's contents are: \"%s\"\n", str->string);
 	} else {
 		size_t i = 0;
 		size_t limit = 0;
@@ -588,7 +589,7 @@ void debugPrintStr(String* str, int verbosity){
 		} else {
 			limit = str->maxCapacity;
 		}
-		printf("it's contents are: ");
+		printf("it's contents are: \"");
 		while (i < limit){
 			switch (str->string[i]){
 				case '\0':
@@ -612,7 +613,7 @@ void debugPrintStr(String* str, int verbosity){
 			}
             i++;
 		}
-        printf("\n");
+        printf("\"\n");
 	}
 	printf("-  -  -  -\n");
 }
