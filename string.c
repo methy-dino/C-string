@@ -17,6 +17,17 @@ void growStr(String* str, unsigned int inc){
     str->maxCapacity = newL;
 	str->string[str->length] = '\0';
 }
+void growStrClean(String* str, int inc){
+	unsigned int newL = inc + str->maxCapacity;
+	char* nStr = (char*)calloc(newL, newL);
+	for (unsigned int i = 0; i < str->length; i++){
+		nStr[i] = str->string[i];
+	}
+	free(str->string);
+	str->string = nStr;
+    str->maxCapacity = newL;
+	str->string[str->length] = '\0';
+}
 String* emptyStr(unsigned int allocSize){
 	String* string  = (String*)malloc(sizeof(struct string));
 	string->maxCapacity = allocSize;
