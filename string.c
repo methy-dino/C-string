@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+#define FORCE_BREAK 2
 typedef struct string{
 	char* string;
 	unsigned int length;
@@ -101,6 +102,14 @@ void appendSubPtr(String* str, char* ptr, int start, int end){
 		str->string[str->length] = ptr[i];
 		str->length++;
 	}
+	str->string[str->length] = '\0';
+}
+void appendChar(String* str, char ch){
+	if (str->length == str->maxCapacity-1){
+		growStr(str, 6);
+	}
+	str->string[str->length] = ch;
+	str->length++;
 	str->string[str->length] = '\0';
 }
 int appendNoLen(String* str, char* ptr, unsigned int max){
