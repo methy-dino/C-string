@@ -8,6 +8,7 @@ typedef struct string{
 	unsigned int maxCapacity;
 }String;
 void growStr(String* str, unsigned int inc);
+void growStrClean(String* str, int inc);
 String* emptyStr(unsigned int allocSize);
 String* ptrToStr(char* ptr);
 /* I don't know why someone would want to initialize like this.

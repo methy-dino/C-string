@@ -66,4 +66,14 @@ int replaceTest(){
     assert(strcmp(str->string, "I burn books every once in a while \n today I burned Little Prince") == 0);
     printf("R T2 passed\n");
     debugPrintStr(str, 3);
+		sub->length = 1;
+		sub->string[1] = '\0';
+		sub->string[0] = 'a';
+		target->length = 1;
+		target->string[1] = '\0';
+		target->string[0] = 'o';
+		replaceStr(str, target, sub);
+		assert(strcmp(str->string, "I burn baaks every ance in a while \n taday I burned Little Prince") == 0);
+		printf("R T3 passed\n");
+		return 0;
 }
