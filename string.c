@@ -200,8 +200,8 @@ void toLowerCase(String* str){
 /* start inclusive, end exclusive, returns string built with exact capacity.
 */
 String* subStr(String* str, unsigned int start, unsigned int end){
-	start = str->length % start;
-	end = str->length % end;
+	start = start % str->length;
+	end = end % str->length;
 	String* ret = malloc(sizeof(String));
 	ret->length = end - start;
 	ret->maxCapacity = ret->length;
