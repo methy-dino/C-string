@@ -588,7 +588,7 @@ void discardStr(String* str){
 /* verbosity indicates what should be printed: 
  * 0 prints the string's contents before str->length, using default string printing.
  * 1 prints the string's address, and it's capacity/filled portion.
- * 2 will also print control characters by it's literal representation, wrapped in ' (i.e '\n' instead of a new line), using a custom printer.
+ * 2 will also print control characters by it's escape code, wrapped in ' (i.e '\n' instead of a new line), using a custom printer, and print the char* address.
  * 3 will print characters after str->length, up to str->maxCapacity*/
 void debugPrintStr(String* str, int verbosity){
 	printf("-  -  -  -\n");
@@ -609,23 +609,23 @@ void debugPrintStr(String* str, int verbosity){
 		} else {
 			limit = str->maxCapacity;
 		}
-		printf("it's contents are: \"");
+		printf("it has it's char pointer at: %p;\nand it's contents are: \"", (void*)str->string);
 		while (i < limit){
 			switch (str->string[i]){
 				case '\0':
-					printf("\'\\0\'");
+					printf("|\\0|");
 					break;
 				case '\n':
-					printf("\'\\n\'");
+					printf("|\\n|");
 					break;
 				case '\r':
-					printf("\'\\r\'");
+					printf("|\\r|");
 					break;
 				case '\t':
-					printf("\'\\t\'");
+					printf("|\\t|");
 					break;
 				case '\v':
-					printf("\'\\v\'");
+					printf("|\\v|");
 					break;
 				default: 
 					printf("%c", str->string[i]);
