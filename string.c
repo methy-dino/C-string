@@ -43,7 +43,7 @@ String* ptrToStr(char* ptr){
 		toRet->string[toRet->length] = ptr[i];
 		toRet->length++;
 		if (toRet->length == toRet->maxCapacity - 1){
-			growStr(toRet, 6);
+			growStr(toRet, toRet->length / 2);
 		}
         i++;
 	}
@@ -96,7 +96,7 @@ void appendArr(String* str, char chars[], unsigned int arrL){
 }
 void appendSubPtr(String* str, char* ptr, int start, int end){
 	if (str->maxCapacity < str->length + (end-start)+1){
-		 growStr(str, (end-start) * 1.5);
+		 growStr(str, (end-start) * 1.5 + 2);
 	}
 	for (int i = start; i < end; i++){	
 		str->string[str->length] = ptr[i];
@@ -106,7 +106,7 @@ void appendSubPtr(String* str, char* ptr, int start, int end){
 }
 void appendChar(String* str, char ch){
 	if (str->length == str->maxCapacity-1){
-		growStr(str, 6);
+		growStr(str, (str->length+1) / 2);
 	}
 	str->string[str->length] = ch;
 	str->length++;
@@ -116,7 +116,7 @@ int appendNoLen(String* str, char* ptr, unsigned int max){
 	unsigned int i = 0;
 	while (ptr[i] != '\0'){
 		if (str->length == str->maxCapacity){
-			growStr(str, 5);
+			growStr(str, (str->length+1) / 2);
 		}
 		str->string[str->length] = ptr[i];
 		str->length++;
@@ -129,7 +129,7 @@ int appendNoLen(String* str, char* ptr, unsigned int max){
 }
 void appendPtr(String* str, char* ptr, unsigned int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
-		 growStr(str, ptrLen * 1.5);
+		 growStr(str, (str->length+1) / 2);
 	}
 	for (unsigned int i = 0; i < ptrLen; i++){	
 		str->string[str->length] = ptr[i];
@@ -139,12 +139,9 @@ void appendPtr(String* str, char* ptr, unsigned int ptrLen){
 }
 void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
-		 growStr(str, ptrLen * 1.5);
+		 growStr(str, ptrLen * 1.5 + 1);
 	}
 	for (unsigned int i = 0; i < ptrLen; i++){
-		if (str->length == str->maxCapacity){
-			growStr(str, (str->length+1) / 2);   
-		}
 		str->string[str->length] = ptr[i];
 		str->length++;
 	}

@@ -44,7 +44,7 @@ String* ptrToStr(char* ptr){
 		toRet->string[toRet->length] = ptr[i];
 		toRet->length++;
 		if (toRet->length == toRet->maxCapacity-1){
-			growStr(toRet, 6);
+			growStr(toRet, (toRet->length+1) / 2);
 		}
         i++;
 	}
@@ -109,7 +109,7 @@ void appendSubPtr(String* str, char* ptr, int start, int end){
 
 void appendChar(String* str, char ch){
 	if (str->length == str->maxCapacity-1){
-		growStr(str, 6);
+		growStr(str, (str->length+1) / 2);
 	}
 	str->string[str->length] = ch;
 	str->length++;
@@ -120,7 +120,7 @@ int appendNoLen(String* str, char* ptr, unsigned int max){
 	unsigned int i = 0;
 	while (ptr[i] != '\0'){
 		if (str->length == str->maxCapacity){
-			growStr(str, 5);
+			growStr(str,(str->length+1) / 2);
 		}
 		str->string[str->length] = ptr[i];
 		str->length++;
