@@ -575,8 +575,8 @@ void reduceStr(String* str, unsigned int reduction){
 	free(str->string);
 	str->string = newString;
 	str->maxCapacity = newL;
-	str->length = newL;
-	str->string[newL] = '\0';
+	str->length = newL-1;
+	str->string[newL-1] = '\0';
 }
 void trimEnd(String* str){
 	reduceStr(str, str->maxCapacity - str->length);
