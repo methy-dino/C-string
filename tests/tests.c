@@ -77,3 +77,23 @@ int replaceTest(){
 		printf("R T3 passed\n");
 		return 0;
 }
+int removeTest(){
+	String* bloated = ptrToStr("hello everyone, I am the String itself");
+	debugPrintStr(bloated, 3);
+	String* clean_up = ptrToStr("the ");
+	removeStr(bloated, clean_up);
+	assert(strcmp(bloated->string, "hello everyone, I am String itself") == 0);
+	printf("REMOVE T1 passed\n");
+	clean_up->length = 0;
+	appendNoLen(clean_up, " itself", 64);
+	removeStr(bloated, clean_up);
+	assert(strcmp(bloated->string, "hello everyone, I am String") == 0);
+	printf("REMOVE T2 passed\n");
+	clean_up->length = 0;
+	appendNoLen(clean_up, " everyone", 64);
+	removeStr(bloated, clean_up);
+	assert(strcmp(bloated->string, "hello, I am String") == 0);
+	printf("REMOVE T3 passed\n");
+	debugPrintStr(bloated, 3);
+	return 0;
+}

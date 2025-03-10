@@ -51,29 +51,6 @@ String* ptrToStr(char* ptr){
 	toRet->string[toRet->length] = '\0';
 	return toRet;
 }
-/* I don't know why someone would want to initialize like this.
- * It is here anyways.
-*/
-String* charArrToStr(char arr[], unsigned int length){
-	String* string  = (String*)malloc(sizeof(struct string));
-	string->maxCapacity = length*1.5+1;
-	string->length = length;
-	string->string = (char*)malloc(string->maxCapacity);
-	for (unsigned int i = 0; i < length; i++){
-		string->string[i] = arr[i];
-	}
-	string->string[string->length] = '\0';
-	return string;
-}
-
-String* initStr(char* rawStr, unsigned int rawStrLen){
-	String* string  = (String*)malloc(sizeof(struct string));
-	string->maxCapacity = rawStrLen;
-	string->length = rawStrLen;
-	string->string = rawStr;
-	return string;
-}
-
 String* buildStr(char* pointer, unsigned int length){
 		String* string  = (String*)malloc(sizeof(struct string));
 		string->maxCapacity = length*1.5+1;
@@ -85,17 +62,6 @@ String* buildStr(char* pointer, unsigned int length){
 	string->string[string->length] = '\0';
 	return string;
 }
-void appendArr(String* str, char chars[], unsigned int arrL){
-	if (str->maxCapacity < str->length + arrL){
-		growStr(str, (str->length+1) / 2);
-	}
-	for (unsigned int i = 0; i < arrL; i++){
-		str->string[str->length] = chars[i];
-		str->length++;
-	}
-	str->string[str->length] = '\0';
-}
- 
 void appendSubPtr(String* str, char* ptr, int start, int end){
 	if (str->maxCapacity < str->length + (end-start)+1){
 		 growStr(str, (end-start) * 1.5);

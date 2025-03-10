@@ -14,11 +14,7 @@ String* ptrToStr(char* ptr);
 /* I don't know why someone would want to initialize like this.
  * It is here anyways.
 */
-String* charArrToStr(char arr[], unsigned int length);
-String* initStr(char* rawStr, unsigned int rawStrLen);
 String* buildStr(char* pointer, unsigned int length);
-void appendArr(String* str, char chars[], unsigned int arrL);
-void appendSubPtr(String* str, char* ptr, int start, int end);
 void appendChar(String* str, char ch);
 int appendNoLen(String* str, char* ptr, unsigned int max);
 void appendPtr(String* str, char* ptr, unsigned int ptrLen);
