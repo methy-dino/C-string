@@ -51,6 +51,13 @@ String* ptrToStr(char* ptr){
 	toRet->string[toRet->length] = '\0';
 	return toRet;
 }
+String* initStr(char* rawStr, unsigned int rawStrLen){
+	String* string  = (String*)malloc(sizeof(struct string));
+	string->maxCapacity = rawStrLen+1;
+	string->length = rawStrLen;
+	string->string = rawStr;
+	return string;
+}
 String* buildStr(char* pointer, unsigned int length){
 		String* string  = (String*)malloc(sizeof(struct string));
 		string->maxCapacity = length*1.5+1;

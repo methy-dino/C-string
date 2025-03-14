@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <limits.h>
 #define FORCE_BREAK 2
-typedef struct string{
+typedef struct string {
 	char* string;
 	unsigned int length;
 	unsigned int maxCapacity;
-}String;
+} String;
 void growStr(String* str, unsigned int inc){
 	unsigned int newL = inc + str->maxCapacity;
 	char* nStr = (char*)malloc(newL);
@@ -29,6 +29,7 @@ void growStrClean(String* str, int inc){
     str->maxCapacity = newL;
 	str->string[str->length] = '\0';
 }
+/* creates an empty (length 0, string[0] == '\0') string with allocSize */
 String* emptyStr(unsigned int allocSize){
 	String* string  = (String*)malloc(sizeof(struct string));
 	string->maxCapacity = allocSize;
@@ -36,6 +37,8 @@ String* emptyStr(unsigned int allocSize){
 	string->string = (char*)malloc(string->maxCapacity);
 	return string;
 }
+
+/* converts a null terminated char* to a String */
 String* ptrToStr(char* ptr){
 	String* toRet = emptyStr(32);
 	unsigned int i = 0;
@@ -51,14 +54,16 @@ String* ptrToStr(char* ptr){
 	return toRet;
 }
 
+/* creates a String using a char* with rawStrLen, USING THE POINTER PROVIDED BEWARE.*/
 String* initStr(char* rawStr, unsigned int rawStrLen){
 	String* string  = (String*)malloc(sizeof(struct string));
-	string->maxCapacity = rawStrLen;
+	string->maxCapacity = rawStrLen+1;
 	string->length = rawStrLen;
 	string->string = rawStr;
 	return string;
 }
 
+/* builds a String with spare capacity from the char* with length*/ 
 String* buildStr(char* pointer, unsigned int length){
 		String* string  = (String*)malloc(sizeof(struct string));
 		string->maxCapacity = length*1.5+1;
