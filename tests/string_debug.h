@@ -56,9 +56,13 @@ long long strCompare(String* str1, String* str2);
 String* cloneStr(String* str);
 unsigned long long hashStr(void* str);
 String* joinStr(String** strings, unsigned int len, String* separator);
+/* splits the String* str by String* divisor, writing the quantity of strings after the split to int* len. */
 String* splitByStr(String* str, String* divisor, unsigned int* len);
+/* reduces the String* str's memory allocation by reduction. */
 void reduceStr(String* str, unsigned int reduction);
+/* sets the String* str's memory allocation to be exact with it's current contents*/
 void trimEnd(String* str);
+/* frees the String* str memory */
 void discardStr(String* str);
 /* verbosity indicates what should be printed: 
  * 0 prints the string's contents before str->length, using default string printing.

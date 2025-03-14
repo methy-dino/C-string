@@ -97,3 +97,15 @@ int removeTest(){
 	debugPrintStr(bloated, 3);
 	return 0;
 }
+int splitTest(){
+    String* test = ptrToStr("thisthatthisthatthisthatthisthatthisthat");
+    String* divisor = ptrToStr("that");
+    unsigned int split_len = 0;
+    String* split_test = splitByStr(test, divisor, &split_len);
+    assert(split_len == 5);
+    for (int i = 0; i < split_len; i++){
+        //printf("%s\n", split_test[i].string);
+        assert(strcmp(split_test[i].string, "this") == 0);    
+    }
+    printf("S T1 passed\n");    
+}

@@ -177,8 +177,8 @@ void toLowerCase(String* str){
 /* start inclusive, end exclusive, returns string built with exact capacity.
 */
 String* subStr(String* str, unsigned int start, unsigned int end){
-	start = start % str->length;
-	end = end % str->length;
+	start = start % (str->length + 1);
+	end = end % (str->length + 1);
 	String* ret = malloc(sizeof(String));
 	ret->length = end - start;
 	ret->maxCapacity = ret->length;
@@ -507,38 +507,49 @@ String* joinStr(String** strings, unsigned int len, String* separator){
 	return joined;
 }
 
+/* splits the String* str by String* divisor, writing the quantity of strings after the split to int* len. */
 String* splitByStr(String* str, String* divisor, unsigned int* len){
 	unsigned int i = 0;
 	unsigned int j = 0;
 	unsigned int prev = 0;
-	String* toRet = malloc(sizeof(String*) * 8);
+	String* toRet = (String*) malloc(sizeof(String) * 8);
 	unsigned int alloc = 8;
 	*len = 0;
-	while (i < str->length - divisor->length){
+	while (i < str->length - divisor->length + 1){
+        j = 0;
 		while(str->string[i+j] == divisor->string[j]){
 			j++;
-			if (divisor->string[j] == '\0'){
-				toRet[*len] = *subStr(str, prev, i);
+			if (divisor->string[j] == '\0'){                
+                String* temp = subStr(str, prev, i);
+				toRet[*len] = *temp;
+                free(temp);
 				i += j;
 				prev = i;
 				*len += 1;
 				if (*len == alloc){
-				alloc += 4;
-				String* newRet = malloc(sizeof(String*) * alloc);
-				for(unsigned int k = 0; k < *len; k++){
-					newRet[k] = toRet[k];
-					}
-				free(toRet);
-				toRet = newRet;
+				    alloc += 4;
+				    String* newRet = (String*) malloc(sizeof(String) * alloc);
+				    for(unsigned int k = 0; k < *len; k++){
+					    newRet[k] = toRet[k];
+				    }
+				    free(toRet);
+				    toRet = newRet;
 				}
+                if (i == str->length){
+                    return toRet;                
+                }
+                break;
 			}
 		}
-		j = 0;
+        i++;
 	}
-	toRet[*len] = *subStr(str, prev, str->length);
-	*len += 1;
+    String* temp = subStr(str, prev, str->length);
+	toRet[*len] = *temp;
+    free(temp);
+    *len += 1;
 	return toRet;
 }
+/* reduces the String* str's memory allocation by reduction. */
 void reduceStr(String* str, unsigned int reduction){
 	unsigned int newL = str->maxCapacity - reduction;
 	char* newString = (char*) malloc(newL);
@@ -551,9 +562,11 @@ void reduceStr(String* str, unsigned int reduction){
 	str->length = newL-1;
 	str->string[newL-1] = '\0';
 }
+/* sets the String* str's memory allocation to be exact with it's current contents*/
 void trimEnd(String* str){
-	reduceStr(str, str->maxCapacity - str->length);
+	reduceStr(str, str->maxCapacity - str->length + 1);
 }
+/* frees the String* str memory */
 void discardStr(String* str){
 	free(str->string);
 	free(str);
