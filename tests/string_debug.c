@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+#include <string.h>
 #define FORCE_BREAK 2
 typedef struct string{
 	char* string;
@@ -11,9 +12,7 @@ void growStr(String* str, unsigned int inc){
 	printf("growing string from %d to %d \n",str->maxCapacity, inc+str->maxCapacity);
 	unsigned int newL = inc + str->maxCapacity;
 	char* nStr = (char*)malloc(newL);
-	for (unsigned int i = 0; i < str->length; i++){
-		nStr[i] = str->string[i];
-	}
+	memcpy(nStr, str->string, str->length);
 	free(str->string);
 	str->string = nStr;
     str->maxCapacity = newL;
@@ -46,7 +45,7 @@ String* ptrToStr(char* ptr){
 		if (toRet->length == toRet->maxCapacity-1){
 			growStr(toRet, (toRet->length+1) / 2);
 		}
-        i++;
+    i++;
 	}
 	toRet->string[toRet->length] = '\0';
 	return toRet;
@@ -183,9 +182,7 @@ String* subStr(String* str, unsigned int start, unsigned int end){
 	ret->length = end - start;
 	ret->maxCapacity = ret->length;
 	ret->string = (char*) malloc(sizeof(char) * ret->length);
-	for (unsigned int i = 0; i < end-start; i++){
-		ret->string[i] = str->string[i+start];
-	}
+	memcpy(ret->string, str->string, ret->length);
 	return ret;
 }
 /* start is inclusive, end is exclusive, as by default.
@@ -474,9 +471,7 @@ String* cloneStr(String* str){
 	nStr->length = str->length;
 	nStr->maxCapacity = str->maxCapacity;
 	nStr->string = (char*) malloc(sizeof(char) * nStr->maxCapacity);
-	for (unsigned int i = 0; i < nStr->length; i++){
-		nStr->string[i] = str->string[i];
-	}
+	memcpy(nStr->string, str->string, str->length);
 	nStr->string[nStr->length] = '\0';
 	return nStr;
 }
