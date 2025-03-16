@@ -107,5 +107,6 @@ int splitTest(){
         //printf("%s\n", split_test[i].string);
         assert(strcmp(split_test[i].string, "this") == 0);    
     }
-    printf("S T1 passed\n");    
+    printf("S T1 passed\n");
+
 }

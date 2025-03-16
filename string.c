@@ -72,15 +72,13 @@ String* buildStr(char* pointer, unsigned int length){
 	string->string[string->length] = '\0';
 	return string;
 }
-
+/* appends only part of a pointer, determined by start and end, does not stop at null terminators.*/
 void appendSubPtr(String* str, char* ptr, int start, int end){
 	if (str->maxCapacity < str->length + (end-start)+1){
 		 growStr(str, (end-start) * 1.5 + 2);
-	}
-	for (int i = start; i < end; i++){	
-		str->string[str->length] = ptr[i];
-		str->length++;
-	}
+	}	
+	memcpy(&str->string[str->length], &ptr[start], end - start);
+	str->length += end - start;
 	str->string[str->length] = '\0';
 }
 void appendChar(String* str, char ch){
