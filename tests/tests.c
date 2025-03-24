@@ -101,12 +101,20 @@ int splitTest(){
     String* test = ptrToStr("thisthatthisthatthisthatthisthatthisthat");
     String* divisor = ptrToStr("that");
     unsigned int split_len = 0;
-    String* split_test = splitByStr(test, divisor, &split_len);
+    String** split_test = splitByStr(test, divisor, &split_len);
     assert(split_len == 5);
     for (int i = 0; i < split_len; i++){
         //printf("%s\n", split_test[i].string);
         assert(strcmp(split_test[i].string, "this") == 0);    
     }
     printf("S T1 passed\n");
-
+    String* test2 = ptrToStr("badthatgoodthatwrongthatrightthat");
+    split_len = 0;
+    String** split_test2 = splitByStr(test2, divisor, &split_len);
+    assert(split_len == 4);
+    assert(strcmp(split_test[0].string, "bad") == 0);
+    assert(strcmp(split_test[1].string, "good") == 0);
+    assert(strcmp(split_test[2].string, "wrong") == 0);
+    assert(strcmp(split_test[3].string, "right") == 0);
+    printf("S T2 passed\n");
 }
