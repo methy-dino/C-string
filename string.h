@@ -3,14 +3,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+#include <string.h>
 #define FORCE_BREAK 2
 typedef struct string {
 	char* string;
 	unsigned int length;
 	unsigned int maxCapacity;
 } String;
-void growStr(String* str, unsigned int inc);
-void growStrClean(String* str, int inc);
+int growStr(String* str, unsigned int inc);
+int growStrClean(String* str, int inc);
 /* creates an empty (length 0, string[0] == '\0') string with allocSize */
 String* emptyStr(unsigned int allocSize);
 /* converts a null terminated char* to a String */
@@ -19,6 +20,7 @@ String* ptrToStr(char* ptr);
 String* initStr(char* rawStr, unsigned int rawStrLen);
 /* builds a String with spare capacity from the char* with length*/ 
 String* buildStr(char* pointer, unsigned int length);
+/* appends only part of a pointer, determined by start and end, does not stop at null terminators.*/
 void appendSubPtr(String* str, char* ptr, int start, int end);
 void appendChar(String* str, char ch);
 int appendNoLen(String* str, char* ptr, unsigned int max);
@@ -60,10 +62,14 @@ long long strCompare(String* str1, String* str2);
 String* cloneStr(String* str);
 unsigned long long hashStr(void* str);
 String* joinStr(String** strings, unsigned int len, String* separator);
+/* splits the String* str by String* divisor, writing the quantity of strings after the split to int* len. */
 String* splitByStr(String* str, String* divisor, unsigned int* len);
+/* reduces the String* str's memory allocation by reduction. */
 void reduceStr(String* str, unsigned int reduction);
+/* sets the String* str's memory allocation to be exact with it's current contents*/
 void trimEnd(String* str);
-/* it is a void* to easier integration to libs with need of free functions. */
+/* it is a void* to easier integration to libs with need of free functions.
+ * frees the String* str memory */
 void discardStr(void* str);
 /* verbosity indicates what should be printed: 
  * 0 prints the string's contents before str->length, using default string printing.

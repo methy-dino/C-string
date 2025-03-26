@@ -8,44 +8,65 @@ typedef struct string {
 	unsigned int length;
 	unsigned int maxCapacity;
 } String;
-void growStr(String* str, unsigned int inc){
+int growStr(String* str, unsigned int inc){
 	unsigned int newL = inc + str->maxCapacity;
 	char* nStr = (char*)malloc(newL);
+	if (nStr == NULL){
+		return 1;
+	}
 	memcpy(nStr, str->string, str->length);
 	free(str->string);
 	str->string = nStr;
   str->maxCapacity = newL;
 	str->string[str->length] = '\0';
+	return 0;
 }
-void growStrClean(String* str, int inc){
+int growStrClean(String* str, int inc){
 	unsigned int newL = inc + str->maxCapacity;
 	char* nStr = (char*)calloc(newL, newL);
+	if (nStr == NULL){
+		return 1;
+	}
 	memcpy(nStr, str->string, str->length);
 	free(str->string);
 	str->string = nStr;
     str->maxCapacity = newL;
 	str->string[str->length] = '\0';
+	return 0;
 }
 /* creates an empty (length 0, string[0] == '\0') string with allocSize */
 String* emptyStr(unsigned int allocSize){
 	String* string  = (String*)malloc(sizeof(struct string));
+	if (string == NULL){
+		return NULL;
+	}
 	string->maxCapacity = allocSize;
 	string->length = 0;
 	string->string = (char*)malloc(string->maxCapacity);
+	if (string->string == NULL){
+		free(string);
+		return NULL;
+	}
 	return string;
 }
 
 /* converts a null terminated char* to a String */
 String* ptrToStr(char* ptr){
 	String* toRet = emptyStr(32);
+	if (toRet == NULL){
+		return NULL;
+	}
 	unsigned int i = 0;
 	while (ptr[i] != '\0'){
 		toRet->string[toRet->length] = ptr[i];
 		toRet->length++;
 		if (toRet->length == toRet->maxCapacity - 1){
-			growStr(toRet, toRet->length / 2);
+			if (growStr(toRet, toRet->length / 2) == 1){
+				discardStr(toRet);
+				return NULL;
+			}
 		}
-        i++;
+      i++;
 	}
 	toRet->string[toRet->length] = '\0';
 	return toRet;
