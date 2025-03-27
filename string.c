@@ -102,6 +102,16 @@ void appendSubPtr(String* str, char* ptr, int start, int end){
 	str->length += end - start;
 	str->string[str->length] = '\0';
 }
+void prependSubPtr(String* str, char* ptr, int start, int end){
+	if (str->maxCapacity < str->length + (end-start)+1){
+		 growStr(str, (end-start) * 1.5 + 2);
+	}	
+	memcpy(&str->string[end-start], &str->string[0], str->length);
+	memcpy(str->string[0], &ptr[start], end-start);
+	str->length += end - start;
+	str->string[str->length] = '\0';
+}
+
 void appendChar(String* str, char ch){
 	if (str->length == str->maxCapacity-1){
 		growStr(str, (str->length+1) / 2);
@@ -133,6 +143,15 @@ void appendPtr(String* str, char* ptr, unsigned int ptrLen){
 		str->string[str->length] = ptr[i];
 		str->length++;
 	}
+	str->string[str->length] = '\0';
+}
+void prependPtr(String* str, char* ptr, unsigned int ptrLen){
+	if (str->maxCapacity < str->length + (end-start)+1){
+		 growStr(str, (end-start) * 1.5 + 2);
+	}	
+	memcpy(&str->string[end-start], &str->string[0], str->length);
+	memcpy(str->string[0], ptr, ptrLen);
+	str->length += ptrLen;
 	str->string[str->length] = '\0';
 }
 void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen){
