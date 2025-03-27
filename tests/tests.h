@@ -9,3 +9,4 @@ int testIndex();
 int replaceTest();
 int removeTest();
 int splitTest();
+int prependTests();

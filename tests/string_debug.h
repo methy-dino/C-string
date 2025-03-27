@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+#include <string.h>
 #define FORCE_BREAK 2
 typedef struct string{
 	char* string;
@@ -16,9 +17,11 @@ String* ptrToStr(char* ptr);
 String* initStr(char* rawStr, unsigned int rawStrLen);
 String* buildStr(char* pointer, unsigned int length);
 void appendSubPtr(String* str, char* ptr, int start, int end);
+void prependSubPtr(String* str, char* ptr, int start, int end);
 void appendChar(String* str, char ch);
 int appendNoLen(String* str, char* ptr, unsigned int max);
 void appendPtr(String* str, char* ptr, unsigned int ptrLen);
+void prependPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendStr(String* str, String* toAppend);
 String* concatStr(String* str, String* toAppend);
