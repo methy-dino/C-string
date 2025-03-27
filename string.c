@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include "string.h"
 #define FORCE_BREAK 2
-typedef struct string {
-	char* string;
-	unsigned int length;
-	unsigned int maxCapacity;
-} String;
+//typedef struct string {
+	//char* string;
+	//unsigned int length;
+	//unsigned int maxCapacity;
+//} String;
 int growStr(String* str, unsigned int inc){
 	unsigned int newL = inc + str->maxCapacity;
 	char* nStr = (char*)malloc(newL);
@@ -109,7 +110,7 @@ int prependSubPtr(String* str, char* ptr, int start, int end){
         }
 	}	
 	memcpy(&str->string[end-start], &str->string[0], str->length);
-	memcpy(str->string[0], &ptr[start], end-start);
+	memcpy(&str->string[0], &ptr[start], end-start);
 	str->length += end - start;
 	str->string[str->length] = '\0';
     return 0;
