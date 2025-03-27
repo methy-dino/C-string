@@ -22,11 +22,11 @@ String* initStr(char* rawStr, unsigned int rawStrLen);
 String* buildStr(char* pointer, unsigned int length);
 /* appends only part of a pointer, determined by start and end, does not stop at null terminators.*/
 void appendSubPtr(String* str, char* ptr, int start, int end);
-void prependSubPtr(String* str, char* ptr, int start, int end);
+int prependSubPtr(String* str, char* ptr, int start, int end);
 void appendChar(String* str, char ch);
 int appendNoLen(String* str, char* ptr, unsigned int max);
 void appendPtr(String* str, char* ptr, unsigned int ptrLen);
-void prependPtr(String* str, char* ptr, unsigned int ptrLen);
+int prependPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendStr(String* str, String* toAppend);
 String* concatStr(String* str, String* toAppend);
