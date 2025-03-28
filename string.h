@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include "string_debug.h"
 #define FORCE_BREAK 2
 typedef struct string {
 	char* string;
@@ -23,12 +24,12 @@ String* buildStr(char* pointer, unsigned int length);
 /* appends only part of a pointer, determined by start and end, does not stop at null terminators.*/
 void appendSubPtr(String* str, char* ptr, int start, int end);
 int prependSubPtr(String* str, char* ptr, int start, int end);
-void appendChar(String* str, char ch);
+int appendChar(String* str, char ch);
 int appendNoLen(String* str, char* ptr, unsigned int max);
-void appendPtr(String* str, char* ptr, unsigned int ptrLen);
+int appendPtr(String* str, char* ptr, unsigned int ptrLen);
 int prependPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen);
-void appendStr(String* str, String* toAppend);
+int appendStr(String* str, String* toAppend);
 String* concatStr(String* str, String* toAppend);
 void toUpperCase(String* str);
 void toLowerCase(String* str);

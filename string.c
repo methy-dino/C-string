@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
-#include "string.h"
+#include "string_debug.h"
 #define FORCE_BREAK 2
 //typedef struct string {
 	//char* string;
@@ -116,19 +116,24 @@ int prependSubPtr(String* str, char* ptr, int start, int end){
     return 0;
 }
 
-void appendChar(String* str, char ch){
+int appendChar(String* str, char ch){
 	if (str->length == str->maxCapacity-1){
-		growStr(str, (str->length+1) / 2);
+		if(growStr(str, (str->length+1) / 2)){
+			return 1;
+		}
 	}
 	str->string[str->length] = ch;
 	str->length++;
 	str->string[str->length] = '\0';
+	return 0;
 }
 int appendNoLen(String* str, char* ptr, unsigned int max){
 	unsigned int i = 0;
 	while (ptr[i] != '\0'){
 		if (str->length == str->maxCapacity){
-			growStr(str, (str->length+1) / 2);
+			if(growStr(str, (str->length+1) / 2)){
+				return 1;
+			}
 		}
 		str->string[str->length] = ptr[i];
 		str->length++;
@@ -139,15 +144,18 @@ int appendNoLen(String* str, char* ptr, unsigned int max){
 	}
 	return 0;
 }
-void appendPtr(String* str, char* ptr, unsigned int ptrLen){
+int appendPtr(String* str, char* ptr, unsigned int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
-		 growStr(str, (str->length+1) / 2);
+		if (growStr(str, (str->length+1) / 2)){
+		 	return 1;
+		}
 	}
 	for (unsigned int i = 0; i < ptrLen; i++){	
 		str->string[str->length] = ptr[i];
 		str->length++;
 	}
 	str->string[str->length] = '\0';
+	return 0;
 }
 int prependPtr(String* str, char* ptr, unsigned int ptrLen){
 	if (str->maxCapacity < str->length + ptrLen){
@@ -173,30 +181,33 @@ void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen){
 	free(ptr);
 }
 
-void appendStr(String* str, String* toAppend){
+int appendStr(String* str, String* toAppend){
 	// avoid unnecessary grow checks
 	if (str->maxCapacity < str->length + toAppend->length){
-	 growStr(str, toAppend->length * 1.5);
+	 if (growStr(str, toAppend->length * 1.5)){
+	 	return 1;
+	 }
 	}
 	for (unsigned int i = 0; i < toAppend->length; i++){
 		str->string[str->length] = toAppend->string[i];
 		str->length++;
 	}
 	str->string[str->length] = '\0';	
+	return 0;
 }
 
 String* concatStr(String* str, String* toAppend){
 	if (str->maxCapacity < str->length + toAppend->length){
-	 growStr(str, toAppend->length * 1.5);
+	 	if (growStr(str, toAppend->length * 1.5)){
+			return NULL;		 
+	 	}
 	}
-	for (unsigned int i = 0; i < toAppend->length; i++){
-		str->string[str->length] = toAppend->string[i];
-		str->length++;
-	}
+	memcpy(str->string + str->length, toAppend->string, toAppend->length);
+	str->length	+= toAppend->length;
 	str->string[str->length] = '\0';
 	free(toAppend->string);
 	free(toAppend);
-	return str;	
+	return str;
 }
 void toUpperCase(String* str){
 	// storing the character codes prevents errors due to different standards.
@@ -224,9 +235,16 @@ String* subStr(String* str, unsigned int start, unsigned int end){
 	start = start % str->length;
 	end = end % str->length;
 	String* ret = malloc(sizeof(String));
+	if (ret == NULL){
+		return NULL;
+	}
 	ret->length = end - start;
 	ret->maxCapacity = ret->length;
 	ret->string = (char*) malloc(sizeof(char) * ret->length);
+	if (ret->string == NULL){
+		free(ret);
+		return NULL;
+	}
 	memcpy(ret->string, str->string + start, ret->length);
 	return ret;
 }
@@ -235,19 +253,15 @@ String* subStr(String* str, unsigned int start, unsigned int end){
  * as a safe guard, ints are converted to % str->length 
  */
 void removeSubStr(String* str, unsigned int start, unsigned int end){
-	start = str->length % start;
-	end = str->length % end;
-    str->length -= end-start;
-	for (unsigned int i = start; i < str->length; i++){
-		str->string[i] = str->string[i+end-start];
-	}
+	start = start % str->length;
+	end = end % str->length;
+  str->length -= end-start;	
+	memcpy(str->string + start, str->string + end, end-start);
 }
 
 void removeCharAt(String* str, unsigned int index){
-	for (unsigned int i = index + 1; i < str->length; i++){
-		str->string[i-1] = str->string[i];
-	}
-	str->length--;
+		memcpy(str->string + index, str->string + index + 1, str->length - index);
+		str->length--;
 }
 
 void removeChar(String* str, char character){
@@ -624,7 +638,7 @@ void debugPrintStr(String* str, int verbosity){
 	printf("-  -  -  -\n");
 	if (verbosity > 0){
 		printf("details of String at: %p\n", (void*) str);
-        printf("it's capacity is %u", str->maxCapacity);
+        printf("it's capacity is %u characters", str->maxCapacity);
         printf(" of which %u are within the string's length\n", str->length);
 	} else {
 		printf("details of a String\n");
