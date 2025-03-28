@@ -4,26 +4,32 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include "string_debug.h"
 #define FORCE_BREAK 2
-typedef struct string{
+typedef struct string {
 	char* string;
 	unsigned int length;
 	unsigned int maxCapacity;
-}String;
-void growStr(String* str, unsigned int inc);
-void growStrClean(String* str, int inc);
+} String;
+int growStr(String* str, unsigned int inc);
+int growStrClean(String* str, int inc);
+/* creates an empty (length 0, string[0] == '\0') string with allocSize */
 String* emptyStr(unsigned int allocSize);
+/* converts a null terminated char* to a String */
 String* ptrToStr(char* ptr);
+/* creates a String using a char* with rawStrLen, USING THE POINTER PROVIDED BEWARE.*/
 String* initStr(char* rawStr, unsigned int rawStrLen);
+/* builds a String with spare capacity from the char* with length*/ 
 String* buildStr(char* pointer, unsigned int length);
+/* appends only part of a pointer, determined by start and end, does not stop at null terminators.*/
 void appendSubPtr(String* str, char* ptr, int start, int end);
-void prependSubPtr(String* str, char* ptr, int start, int end);
-void appendChar(String* str, char ch);
+int prependSubPtr(String* str, char* ptr, int start, int end);
+int appendChar(String* str, char ch);
 int appendNoLen(String* str, char* ptr, unsigned int max);
-void appendPtr(String* str, char* ptr, unsigned int ptrLen);
-void prependPtr(String* str, char* ptr, unsigned int ptrLen);
+int appendPtr(String* str, char* ptr, unsigned int ptrLen);
+int prependPtr(String* str, char* ptr, unsigned int ptrLen);
 void appendHeapPtr(String* str, char* ptr, unsigned int ptrLen);
-void appendStr(String* str, String* toAppend);
+int appendStr(String* str, String* toAppend);
 String* concatStr(String* str, String* toAppend);
 void toUpperCase(String* str);
 void toLowerCase(String* str);
@@ -65,8 +71,9 @@ String* splitByStr(String* str, String* divisor, unsigned int* len);
 void reduceStr(String* str, unsigned int reduction);
 /* sets the String* str's memory allocation to be exact with it's current contents*/
 void trimEnd(String* str);
-/* frees the String* str memory */
-void discardStr(String* str);
+/* it is a void* to easier integration to libs with need of free functions.
+ * frees the String* str memory */
+void discardStr(void* str);
 /* verbosity indicates what should be printed: 
  * 0 prints the string's contents before str->length, using default string printing.
  * 1 prints the string's address, and it's capacity/filled portion.
