@@ -256,7 +256,8 @@ void removeSubStr(String* str, unsigned int start, unsigned int end){
 	start = start % str->length;
 	end = end % str->length;
   str->length -= end-start;	
-	memcpy(str->string + start, str->string + end, end-start);
+	memcpy(str->string + start, str->string + end, str->length);
+	str->string[str->length] = '\0';
 }
 
 void removeCharAt(String* str, unsigned int index){

@@ -94,6 +94,13 @@ int removeTest(){
 	removeStr(bloated, clean_up);
 	assert(strcmp(bloated->string, "hello, I am String") == 0);
 	printf("REMOVE T3 passed\n");
+	removeCharAt(bloated, 0);
+	assert(strcmp(bloated->string, "ello, I am String") == 0);
+	printf("REMOVE T4 passed\n");
+	removeSubStr(bloated, 0, 5);
+debugPrintStr(bloated, 3);
+	assert(strcmp(bloated->string, " I am String") == 0);
+	printf("REMOVE T5 passed\n");
 	debugPrintStr(bloated, 3);
 	return 0;
 }
