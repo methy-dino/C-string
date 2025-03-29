@@ -11,10 +11,12 @@
 //} String;
 int growStr(String* str, unsigned int inc){
 	unsigned int newL = inc + str->maxCapacity;
-	char* nStr = (char*)malloc(newL);
-	if (nStr == NULL){
-		return 1;
+	char* nStr = NULL; 
+	char count = 0;
+	while ((nStr = (char*)malloc(newL)) == NULL && count < 3){
+		count++;
 	}
+	if (count == 3) return 1;
 	memcpy(nStr, str->string, str->length);
 	free(str->string);
 	str->string = nStr;
