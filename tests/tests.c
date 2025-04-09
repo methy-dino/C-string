@@ -17,17 +17,17 @@ int testIndex(){
 	discardStr(simiSub);
 	similar = ptrToStr("mini shark, giga fish");
 	simiSub = ptrToStr("ni");
-	unsigned int indSub = indexOfStr(similar, simiSub, 0);
+	size_t indSub = indexOfStr(similar, simiSub, 0);
 	assert(indSub == 2);
 	printf("I T4 passed\n");
 	removeCharAt(similar, indSub);
-	assert(indexOfStr(similar, simiSub, 0) == UINT_MAX);
+	assert(indexOfStr(similar, simiSub, 0) == 0xffffffffffffffff);
 	printf("I T5 passed\n");
 	discardStr(similar);
 	discardStr(simiSub);
 	similar = ptrToStr("mamamamamama");
-	unsigned int index = 0;
-	unsigned int prevInd = 0;
+	size_t index = 0;
+	size_t prevInd = 0;
 	index = indexOfChar(similar, 'a', prevInd); 
 	assert(index == 1);
 	prevInd = index;
@@ -107,10 +107,11 @@ debugPrintStr(bloated, 3);
 int splitTest(){
     String* test = ptrToStr("thisthatthisthatthisthatthisthatthisthat");
     String* divisor = ptrToStr("that");
-    unsigned int split_len = 0;
+    size_t split_len = 0;
     String* split_test = splitByStr(test, divisor, &split_len);
     assert(split_len == 5);
-    for (int i = 0; i < split_len; i++){
+		size_t i = 0;
+    for (i = 0; i < split_len; i++){
         //printf("%s\n", split_test[i].string);
         assert(strcmp(split_test[i].string, "this") == 0);    
     }
@@ -133,4 +134,9 @@ int prependTests(){
     prependSubPtr(test, "TTwenty-", 1, 8);
     assert(strcmp(test->string, "Twenty-two men") == 0);
     printf("Prep T2 passed\n");
+}
+int allocTests(){
+	String* str = emptyStr(0xffffffffffffffff);
+	assert(str == NULL);
+	return 0;
 }

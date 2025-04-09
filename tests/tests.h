@@ -10,3 +10,4 @@ int replaceTest();
 int removeTest();
 int splitTest();
 int prependTests();
+int allocTests();
