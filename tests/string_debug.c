@@ -4,11 +4,6 @@
 #include <string.h>
 #include "string_debug.h"
 #define FORCE_BREAK 2
-//typedef struct string {
-	//char* string;
-	//unsigned int length;
-	//unsigned int maxCapacity;
-//} String;
 int growStr(String* str, size_t inc){
 	size_t newL = inc + str->maxCapacity;
 	char* nStr = NULL; 
@@ -168,7 +163,7 @@ void appendHeapPtr(String* str, char* ptr, size_t ptrLen){
 }
 
 int appendStr(String* str, String* toAppend){
-	// avoid unnecessary grow checks
+	/* avoid unnecessary grow checks */
 	if (str->maxCapacity < str->length + toAppend->length){
 	 if (growStr(str, toAppend->length * 1.5)){
 	 	return 1;
@@ -194,7 +189,7 @@ String* concatStr(String* str, String* toAppend){
 	return str;
 }
 void toUpperCase(String* str){
-	// storing the character codes prevents errors due to different standards.
+	/* storing the character codes prevents errors due to different standards.*/
 	int Acode = 'A';
 	int aCode = 'a';
 	size_t i = 0;
@@ -205,7 +200,7 @@ void toUpperCase(String* str){
 	}
 }
 void toLowerCase(String* str){
-	// storing the character codes prevents errors due to different standards.
+	/* storing the character codes prevents errors due to different standards.*/
 	int Acode = 'A';
 	int aCode = 'a';
 	size_t i = 0;
@@ -317,7 +312,7 @@ void removeLastStr(String* str, String* subStr){
 				}
 				str->length-=removed;
 				str->string[str->length] = '\0';
-				// loop break.
+				/* loop break.*/
 				return;
 			}
 		}
@@ -397,12 +392,12 @@ void replaceStr(String* str, String* target, String* sub){
 			j++;
 			if (j == target->length){
 				if (str->maxCapacity < str->length + sub->length - target->length){
-					// allocate extra space for less reallocs (heap slow!1!1!1)
+					/* allocate extra space for less reallocs */
 					growStr(str, (sub->length - target->length)*2);
 				}
 				str->length += sub->length - target->length;
 				str->string[str->length] = '\0';
-				// has to be backwards since we are moving chars further.
+				/* has to be backwards since we are moving chars further.*/
 				size_t k = 0;
 				for (k = str->length-1; k > i+sub->length-1; k--){
 					str->string[k] = str->string[k - sub->length + target->length];
@@ -426,7 +421,7 @@ void replaceFirstStr(String* str, String* target, String* sub){
 			j++;
 			if (j == target->length){
 				if (str->maxCapacity < str->length + sub->length - target->length){
-					//there is no need for extra allocation.
+					/* there is no need for extra allocation.*/
 					growStr(str, (sub->length - target->length));
 				}
 				str->length += sub->length - target->length;
@@ -546,7 +541,7 @@ size_t hashStr(void* str){
 	String* string = (String*) str;
 	size_t i = 0;
 	for (i = 0; i < string->length; i++){
-		// the bit shift by charSize is to grant compatibility with other charset, such as UTF-16. 
+		/* the bit shift by charSize is to grant compatibility with other charset, such as UTF-16.*/ 
 		value = ((value << charSize) | string->string[i]) & 1000000007;
 	}
 	return value;

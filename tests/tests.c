@@ -111,8 +111,7 @@ int splitTest(){
     String* split_test = splitByStr(test, divisor, &split_len);
     assert(split_len == 5);
 		size_t i = 0;
-    for (i = 0; i < split_len; i++){
-        //printf("%s\n", split_test[i].string);
+    for (i = 0; i < split_len; i++){ 
         assert(strcmp(split_test[i].string, "this") == 0);    
     }
     printf("S T1 passed\n");
@@ -138,5 +137,6 @@ int prependTests(){
 int allocTests(){
 	String* str = emptyStr(0xffffffffffffffff);
 	assert(str == NULL);
+	printf("Allocation T1 passed\n");
 	return 0;
 }
