@@ -72,10 +72,9 @@ String* initStr(char* rawStr, size_t rawStrLen){
 String* buildStr(char* pointer, size_t length){
 		String* string  = (String*)malloc(sizeof(struct string));
 		string->maxCapacity = length*1.5+1;
-		string->length = length;
 		string->string = (char*)malloc(string->maxCapacity);
 		memcpy(string->string, pointer, length);
-		string->length += length;
+		string->length = length;
 	string->string[string->length] = '\0';
 	return string;
 }
