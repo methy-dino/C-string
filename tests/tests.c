@@ -75,6 +75,14 @@ int replaceTest(){
 		replaceStr(str, target, sub);
 		assert(strcmp(str->string, "I burn baaks every ance in a while \n taday I burned Little Prince") == 0);
 		printf("R T3 passed\n");
+		insertChar(str, 'e', 3);
+		assert(strcmp(str->string, "I beurn baaks every ance in a while \n taday I burned Little Prince") == 0);
+		printf("R T4 passed\n");
+		String* silly = ptrToStr("silly");
+		insertStr(str, silly, 3);
+		printf("%s\n", str->string);
+		assert(strcmp(str->string, "I bsillyeurn baaks every ance in a while \n taday I burned Little Prince") == 0);
+		printf("R T4 passed\n");
 		return 0;
 }
 int removeTest(){

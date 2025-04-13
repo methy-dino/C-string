@@ -466,6 +466,40 @@ void replaceLastStr(String* str, String* target, String* sub){
 	}
 	str->string[str->length] = '\0';
 }
+char insertChar(String* str, char ch, size_t index){
+	if (str->length == str->maxCapacity - 1){
+		if (growStr(str, str->length / 2)){
+			return 1;
+		}
+	}
+	size_t curr = str->length;
+	while (curr > index){
+		memcpy(str->string + curr, str->string + curr - 1, 1);
+		curr--;
+	}
+	str->length++;
+	str->string[str->length] = '\0';
+	str->string[index] = ch;
+	return 0;
+}
+char insertStr(String* str, String* str2, size_t index){
+	if (str->length > str->maxCapacity - str2->length){
+		if (growStr(str, str->length / 2)){
+			return 1;
+		}
+	}
+	/* -1 for the second '/0'*/
+	size_t curr = str->length + str2->length - 1;
+	while (curr > index-1){
+		memcpy(str->string + curr + str2->length, str->string + curr, 1);
+		curr--;
+	}
+	str->length += str2->length;
+	str->string[str->length] = '\0';
+	memcpy(str->string + index, str2->string, str2->length);
+	return 0;
+
+}
 /* returns 1 if the strings are equal, otherwise returns 0.
  * does not compare after String.length, it may contain trash data after that.
  * trash data is non-zeroed and unsanitized.
