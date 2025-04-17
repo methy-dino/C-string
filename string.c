@@ -8,12 +8,10 @@ int growStr(String* str, size_t inc){
 	size_t newL = inc + str->maxCapacity;
 	char* nStr = NULL; 
 	char count = 0;
-	while ((nStr = (char*)malloc(newL)) == NULL && count < 3){
+	while ((nStr = (char*)realloc(str->string, newL)) == NULL && count < 3){
 		count++;
 	}
 	if (count == 3) return 1;
-	memcpy(nStr, str->string, str->length);
-	free(str->string);
 	str->string = nStr;
   str->maxCapacity = newL;
 	str->string[str->length] = '\0';
