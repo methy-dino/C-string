@@ -638,25 +638,15 @@ String* splitByStr(String* str, String* divisor, size_t* len){
 	return toRet;
 }
 
-/* reduces the String* str's memory allocation by reduction. */
-void reduceStr(String* str, size_t reduction){
+/* reduces the String* str's memory allocation by reduction, assumes reduction wont decrease size to  <= 0 */
+void reduceStr(String* str, const size_t reduction){
 	size_t newL = str->maxCapacity - reduction;
-	char* newString = (char*) malloc(newL);
-	size_t i = 0;
-	for (i = 0; i < newL; i++){
-		newString[i] = str->string[i];
-	}
-	free(str->string);
-	str->string = newString;
-	str->maxCapacity = newL;
-	str->length = newL-1;
+	str->string = realloc(str->string, newL);
 	str->string[newL-1] = '\0';
 }
 
 /* sets the String* str's memory allocation to be exact with it's current contents*/
-void trimEnd(String* str){
-	reduceStr(str, str->maxCapacity - str->length);
-}
+#define trimEnd(str) reduceStr(str, str->maxCapacity - str->length);
 /* it is a void* to easier integration to libs with need of free functions.
  * frees the String* str memory */
 void discardStr(void* str){
