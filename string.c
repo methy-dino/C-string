@@ -639,10 +639,17 @@ String* splitByStr(String* str, String* divisor, size_t* len){
 }
 
 /* reduces the String* str's memory allocation by reduction, assumes reduction wont decrease size to  <= 0 */
-void reduceStr(String* str, const size_t reduction){
+int reduceStr(String* str, const size_t reduction){
 	size_t newL = str->maxCapacity - reduction;
-	str->string = realloc(str->string, newL);
-	str->string[newL-1] = '\0';
+	void* new = realloc(str->string, newL);
+	if (new == NULL){
+		return 1;
+	}
+	str->string = new;
+	str->maxCapacity = newL;
+	str->length = newL > str->length ? str->length : newL-1;
+	str->string[str->length] = '\0';
+	return 0;
 }
 
 /* sets the String* str's memory allocation to be exact with it's current contents*/

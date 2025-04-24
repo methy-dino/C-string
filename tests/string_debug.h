@@ -4,12 +4,14 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include "string.h"
+#define FORCE_BREAK 2
 typedef struct string {
 	char* string;
 	size_t length;
 	size_t maxCapacity;
 } String;
-#define FORCE_BREAK 2
+
 int growStr(String* str, size_t inc);
 int growStrClean(String* str, size_t inc);
 /* creates an empty (length 0, string[0] == '\0') string with allocSize */
@@ -69,7 +71,7 @@ String* joinStr(String** strings, size_t len, String* separator);
 /* splits the String* str by String* divisor, writing the quantity of strings after the split to int* len. */
 String* splitByStr(String* str, String* divisor, size_t* len);
 /* reduces the String* str's memory allocation by reduction, assumes reduction wont decrease size to  <= 0 */
-void reduceStr(String* str, const size_t reduction);
+int reduceStr(String* str, const size_t reduction);
 /* sets the String* str's memory allocation to be exact with it's current contents*/
 #define trimEnd(str) reduceStr(str, str->maxCapacity - str->length);
 /* it is a void* to easier integration to libs with need of free functions.
