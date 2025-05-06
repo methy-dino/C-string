@@ -63,7 +63,7 @@ char insertStr(String* str, String* str2, size_t index);
  */
 int strEqual(String* str1, String* str2);
 size_t evaluateStr(String* str);
-long long strCompare(String* str1, String* str2);
+long strCompare(String* str1, String* str2);
 /* clones a string, will not clone content after String.length (Incase you are storing data there) */
 String* cloneStr(String* str);
 size_t hashStr(void* str);
@@ -73,7 +73,7 @@ String* splitByStr(String* str, String* divisor, size_t* len);
 /* reduces the String* str's memory allocation by reduction, assumes reduction wont decrease size to  <= 0 */
 int reduceStr(String* str, const size_t reduction);
 /* sets the String* str's memory allocation to be exact with it's current contents*/
-#define trimEnd(str) reduceStr(str, str->maxCapacity - str->length);
+#define trimEnd(str) reduceStr(str, str->maxCapacity - str->length-1);
 /* it is a void* to easier integration to libs with need of free functions.
  * frees the String* str memory */
 void discardStr(void* str);
