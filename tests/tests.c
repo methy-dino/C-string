@@ -10,9 +10,9 @@ int testIndex(){
 	size_t index;
 	size_t prevInd;
 	printf("running index tests...\n");
-	similar = ptrToStr("abcbbbcbbc\0");
-	simiSub = ptrToStr("bbc\0");
-	assert(indexOfStr(similar, simiSub, 0) == 3);
+	similar = ptrToStr("abcbbbcbbc");
+	simiSub = ptrToStr("bbc");
+	assert(indexOfStr(similar, simiSub, 0) == 4);
 	printf("I T1 passed\n");
 	assert(indexOfStr(similar, simiSub, 5) == 7);
 	printf("I T2 passed\n");
@@ -68,6 +68,7 @@ int replaceTest(){
 	target = ptrToStr("read");
 	sub = ptrToStr("burn");
 	replaceFirstStr(str, target, sub);
+	printf("\"%s\"", str->string);
 	assert(strcmp(str->string, "I burn books every once in a while \n today I read Little Prince") == 0);
 	printf("R T1 passed\n");
 	appendPtr(sub, "ed", 2);
@@ -89,6 +90,7 @@ int replaceTest(){
 	printf("R T4 passed\n");
 	silly = ptrToStr("silly");
 	insertStr(str, silly, 3);
+	printf("\"%s\"\n", str->string);
 	assert(strcmp(str->string, "I bsillyeurn baaks every ance in a while \n taday I burned Little Prince") == 0);
 	trimEnd(str);
 	assert(strcmp(str->string, "I bsillyeurn baaks every ance in a while \n taday I burned Little Prince") == 0);
@@ -102,11 +104,14 @@ int removeTest(){
 	debugPrintStr(bloated, 3);
 	clean_up = ptrToStr("the ");
 	removeStr(bloated, clean_up);
+	printf("\"%s\"\n", bloated->string);
 	assert(strcmp(bloated->string, "hello everyone, I am String itself") == 0);
 	printf("REMOVE T1 passed\n");
 	clean_up->length = 0;
 	appendNoLen(clean_up, " itself", 64);
+	printf("\"%s\"\n", clean_up->string);
 	removeStr(bloated, clean_up);
+	printf("\"%s\"\n", bloated->string);
 	assert(strcmp(bloated->string, "hello everyone, I am String") == 0);
 	printf("REMOVE T2 passed\n");
 	clean_up->length = 0;
@@ -115,6 +120,7 @@ int removeTest(){
 	assert(strcmp(bloated->string, "hello, I am String") == 0);
 	printf("REMOVE T3 passed\n");
 	removeCharAt(bloated, 0);
+	printf("\"%s\"\n", bloated->string);
 	assert(strcmp(bloated->string, "ello, I am String") == 0);
 	printf("REMOVE T4 passed\n");
 	removeSubStr(bloated, 0, 5);

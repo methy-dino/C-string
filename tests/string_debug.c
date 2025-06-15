@@ -45,7 +45,7 @@ String* emptyStr(size_t allocSize){
 	}
 	string->maxCapacity = allocSize;
 	string->length = 0;
-	string->string = (char*) malloc(string->maxCapacity);
+	string->string = (char*) malloc(allocSize);
 	if (string->string == NULL){
 		free(string);
 		return NULL;
@@ -56,11 +56,13 @@ String* emptyStr(size_t allocSize){
 /* converts a null terminated char* to a String */
 String* ptrToStr(char* ptr){
 	String* toRet;
-	toRet = emptyStr(strlen(ptr));
+	printf("entrada \"%s\" %u\n", ptr, strlen(ptr));
+	toRet = emptyStr(strlen(ptr)+1);
 	if (toRet == NULL){
 		return NULL;
 	}
-	toRet->length = toRet->maxCapacity;
+	toRet->length = toRet->maxCapacity-1;
+	printf("%d WHAR\n", toRet->length);
 	memcpy(toRet->string, ptr, toRet->maxCapacity);
 	return toRet;
 }
@@ -136,6 +138,13 @@ int appendNoLen(String* str, char* ptr, size_t max){
 		if (max != 0 && i == max){
 			str->string[str->length] = '\0';
 			return FORCE_BREAK;
+		}
+	}
+	if (str->length == str->maxCapacity){
+		if(growStr(str, (str->length+1) / 2)){
+			str->length--;
+			str->string[str->length] = '\0';
+			return 1;
 		}
 	}
 	str->string[str->length] = '\0';
@@ -238,7 +247,7 @@ String* subStr(String* str, size_t start, size_t end){
 	}
 	ret->length = end - start;
 	ret->maxCapacity = ret->length;
-	ret->string = (char*) malloc(sizeof(char) * ret->length);
+	ret->string = (char*) malloc(sizeof(char) * ret->length+1);
 	if (ret->string == NULL){
 		free(ret);
 		return NULL;
@@ -286,14 +295,18 @@ void removeStr(String* str, String* subStr){
 		j = 0;
 		while (str->string[i+j] == subStr->string[j]){	
 			j++;
-			if (subStr->string[j+1] == '\0'){
-				i += j+1;
-				removed+= subStr->length;
+			if (subStr->string[j] == '\0'){
+				i += subStr->length;
+				removed += subStr->length;
+				break;
 			}
 		}
-		str->string[i-removed] = str->string[i]; 	
+		printf("%c %d becomes %c %d\n",str->string[i-removed],str->string[i-removed], str->string[i], str->string[i]);	
+		str->string[i-removed] = str->string[i];	
 	}
-	str->length-=removed;
+	printf("\"%s\" %d \n", str->string, str->length);
+	str->length -= removed;
+	printf("\"%s\" %d \n", str->string, str->length);
 	str->string[str->length] = '\0';
 }
 void removeFirstStr(String* str, String* subStr){
@@ -376,7 +389,7 @@ size_t indexOfStr(String* str, String* subStr, size_t startIndex){
 		i = 0;
 		while (str->string[start+i] == subStr->string[i]){
 			i++;
-			if (i+1 == subStr->length){
+			if (i == subStr->length){
 				return start;
 			}
 		}
@@ -447,12 +460,13 @@ void replaceFirstStr(String* str, String* target, String* sub){
 		while (str->string[i+j] == target->string[j]){
 			j++;
 			if (j == target->length){
-				if (str->maxCapacity < str->length + sub->length - target->length){
+				if (str->maxCapacity < str->length + sub->length - target->length+1){
 					/* there is no need for extra allocation.*/
 					growStr(str, (sub->length - target->length));
 				}
 				str->length += sub->length - target->length;
 				str->string[str->length] = '\0';
+				printf("CHAR \"%c\" %d\n", str->string[str->length-1], str->string[str->length-1]);
 				for (k = str->length-1; k > i+sub->length-1; k--){
 					str->string[k] = str->string[k - sub->length + target->length];
 				}
@@ -513,7 +527,7 @@ char insertChar(String* str, char ch, size_t index){
 char insertStr(String* str, String* str2, size_t index){
 	size_t curr;
 	curr = str->length + str2->length - 1;
-	if (str->length > str->maxCapacity - str2->length){
+	if (str->length > str->maxCapacity - str2->length-1){
 		if (growStr(str, str->length / 2)){
 			return 1;
 		}
@@ -634,7 +648,7 @@ String* joinStr(String** strings, size_t len, String* separator){
 String* splitByStr(String* str, String* divisor, size_t* len){
 	size_t i;
 	size_t j;
-	size_t prev;
+	size_t prev = 0;
 	String* toRet = (String*) malloc(sizeof(String) * 8);
 	size_t alloc = 8;
 	size_t k;
@@ -713,8 +727,8 @@ void debugPrintStr(String* str, int verbosity){
 	printf("-  -  -  -\n");
 	if (verbosity > 0){
 		printf("details of String at: %p\n", (void*) str);
-        printf("it's capacity is %lu characters", (unsigned long) str->maxCapacity);
-        printf(" of which %lu are within the string's length\n", (unsigned long)str->length);
+        printf("it's capacity is %llu characters", (unsigned long long) str->maxCapacity);
+        printf(" of which %llu are within the string's length\n", (unsigned long long)str->length);
 	} else {
 		printf("details of a String\n");
 	}
