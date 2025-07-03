@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include "string.h"
 #define FORCE_BREAK 2
 typedef struct string {
 	char* string;
@@ -62,7 +63,7 @@ char insertStr(String* str, String* str2, size_t index);
  */
 int strEqual(String* str1, String* str2);
 size_t evaluateStr(String* str);
-long strCompare(String* str1, String* str2);
+long long strCompare(String* str1, String* str2);
 /* clones a string, will not clone content after String.length (Incase you are storing data there) */
 String* cloneStr(String* str);
 size_t hashStr(void* str);

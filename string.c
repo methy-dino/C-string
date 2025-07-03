@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
-#include "string_debug.h"
+#include "string.h"
 #define FORCE_BREAK 2
 int growStr(String* str, size_t inc){
 	size_t newL;
@@ -56,13 +56,11 @@ String* emptyStr(size_t allocSize){
 /* converts a null terminated char* to a String */
 String* ptrToStr(char* ptr){
 	String* toRet;
-	printf("entrada \"%s\" %u\n", ptr, strlen(ptr));
 	toRet = emptyStr(strlen(ptr)+1);
 	if (toRet == NULL){
 		return NULL;
 	}
 	toRet->length = toRet->maxCapacity-1;
-	printf("%d WHAR\n", toRet->length);
 	memcpy(toRet->string, ptr, toRet->maxCapacity);
 	return toRet;
 }
@@ -90,7 +88,7 @@ String* buildStr(char* pointer, size_t length){
 }
 /* appends only part of a pointer, determined by start and end, does not stop at null terminators.*/
 void appendSubPtr(String* str, char* ptr, size_t start, size_t end){
-	if (str->maxCapacity < str->length + (end-start)+1){
+	if (str->maxCapacity <= str->length + (end-start)+1){
 		 growStr(str, (end-start) * 1.5 + 2);
 	}	
 	memcpy(&str->string[str->length], &ptr[start], end - start);
@@ -98,7 +96,7 @@ void appendSubPtr(String* str, char* ptr, size_t start, size_t end){
 	str->string[str->length] = '\0';
 }
 int prependSubPtr(String* str, char* ptr, size_t start, size_t end){
-	if (str->maxCapacity < str->length + (end-start)+1){
+	if (str->maxCapacity <= str->length + (end-start)+1){
 		if (growStr(str, (end-start) * 1.5 + 2)){
             return 1;    
         }
@@ -151,7 +149,7 @@ int appendNoLen(String* str, char* ptr, size_t max){
 	return 0;
 }
 int appendPtr(String* str, char* ptr, size_t ptrLen){
-	if (str->maxCapacity < str->length + ptrLen){
+	if (str->maxCapacity <= str->length + ptrLen){
 		if (growStr(str, (str->length+1) / 2)){
 		 	return 1;
 		}
@@ -162,7 +160,7 @@ int appendPtr(String* str, char* ptr, size_t ptrLen){
 	return 0;
 }
 int prependPtr(String* str, char* ptr, size_t ptrLen){
-	if (str->maxCapacity < str->length + ptrLen){
+	if (str->maxCapacity <= str->length + ptrLen){
 		if (growStr(str, ptrLen * 1.5 + 2)){
 			return 1;    
 		}       
@@ -174,7 +172,7 @@ int prependPtr(String* str, char* ptr, size_t ptrLen){
 	return 0;
 }
 void appendHeapPtr(String* str, char* ptr, size_t ptrLen){
-	if (str->maxCapacity < str->length + ptrLen){
+	if (str->maxCapacity <= str->length + ptrLen){
 		 growStr(str, ptrLen * 1.5 + 1);
 	}
 	memcpy(&str->string[str->length], ptr, ptrLen);
@@ -185,7 +183,7 @@ void appendHeapPtr(String* str, char* ptr, size_t ptrLen){
 
 int appendStr(String* str, String* toAppend){
 	/* avoid unnecessary grow checks */
-	if (str->maxCapacity < str->length + toAppend->length){
+	if (str->maxCapacity <= str->length + toAppend->length){
 		if (growStr(str, toAppend->length * 1.5)){
 			return 1;
 		}
@@ -197,7 +195,7 @@ int appendStr(String* str, String* toAppend){
 }
 
 String* concatStr(String* str, String* toAppend){
-	if (str->maxCapacity < str->length + toAppend->length){
+	if (str->maxCapacity <= str->length + toAppend->length){
 	 	if (growStr(str, toAppend->length * 1.5)){
 			return NULL;		 
 	 	}
@@ -301,12 +299,9 @@ void removeStr(String* str, String* subStr){
 				break;
 			}
 		}
-		printf("%c %d becomes %c %d\n",str->string[i-removed],str->string[i-removed], str->string[i], str->string[i]);	
 		str->string[i-removed] = str->string[i];	
 	}
-	printf("\"%s\" %d \n", str->string, str->length);
 	str->length -= removed;
-	printf("\"%s\" %d \n", str->string, str->length);
 	str->string[str->length] = '\0';
 }
 void removeFirstStr(String* str, String* subStr){
@@ -466,7 +461,6 @@ void replaceFirstStr(String* str, String* target, String* sub){
 				}
 				str->length += sub->length - target->length;
 				str->string[str->length] = '\0';
-				printf("CHAR \"%c\" %d\n", str->string[str->length-1], str->string[str->length-1]);
 				for (k = str->length-1; k > i+sub->length-1; k--){
 					str->string[k] = str->string[k - sub->length + target->length];
 				}
@@ -568,7 +562,7 @@ size_t evaluateStr(String* str){
 	}
 	return value;
 }
-long strCompare(String* str1, String* str2){
+long long strCompare(String* str1, String* str2){
 	size_t str1Val;
 	size_t str2Val;
 	size_t i;
